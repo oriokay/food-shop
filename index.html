@@ -3,9 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YD Healthy Food Jijel - Accueil</title>
+    <title>YD Healthy Food Jijel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* All your CSS from style.css goes here */
+        :root {
+            --primary-color: #27ae60;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Add ALL your existing CSS styles here... */
+        /* ... (copy everything from style.css) ... */
+        
+        /* Page transition styles */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -17,10 +61,10 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html" id="nav-home" class="active">Accueil</a></li>
-                    <li><a href="menu.html" id="nav-menu">Menu</a></li>
-                    <li><a href="order.html" id="nav-order">Commander</a></li>
-                    <li><a href="contact.html" id="nav-contact">Contact</a></li>
+                    <li><a href="#" data-page="home" class="nav-link active">Accueil</a></li>
+                    <li><a href="#" data-page="menu" class="nav-link">Menu</a></li>
+                    <li><a href="#" data-page="order" class="nav-link">Commander</a></li>
+                    <li><a href="#" data-page="contact" class="nav-link">Contact</a></li>
                 </ul>
             </nav>
             <div class="lang-switcher">
@@ -30,90 +74,512 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container">
-            <h2 id="hero-title">Nourriture Sain et Équilibrée à Jijel</h2>
-            <p id="hero-text">Commandez vos plats healthy préférés en ligne et recevez-les chez vous ou au travail. Livraison rapide dans toute la ville de Jijel.</p>
-            <a href="menu.html" class="order-btn" id="hero-order-btn">Commander Maintenant</a>
+    <!-- Home Page -->
+    <section id="home-page" class="page active">
+        <div class="hero" id="home">
+            <div class="container">
+                <h2 id="hero-title">Nourriture Sain et Équilibrée à Jijel</h2>
+                <p id="hero-text">Commandez vos plats healthy préférés en ligne et recevez-les chez vous ou au travail. Livraison rapide dans toute la ville de Jijel.</p>
+                <button class="order-btn" id="hero-order-btn">Commander Maintenant</button>
+            </div>
+        </div>
+
+        <div class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2 id="about-title">À Propos de YD Healthy Food</h2>
+                        <p id="about-text-1">Nous sommes passionnés par la nourriture saine et équilibrée. Notre mission est de fournir des repas délicieux et nutritifs à nos clients à Jijel.</p>
+                        <p id="about-text-2">Tous nos plats sont préparés avec des ingrédients frais et de qualité, sans conservateurs ni additifs artificiels.</p>
+                        <div class="features">
+                            <div class="feature">
+                                <i class="fas fa-leaf"></i>
+                                <h3 id="feature-1-title">Ingrédients Frais</h3>
+                                <p id="feature-1-text">Utilisation quotidienne d'ingrédients frais et locaux</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-truck"></i>
+                                <h3 id="feature-2-title">Livraison Rapide</h3>
+                                <p id="feature-2-text">Livraison à domicile en moins de 45 minutes</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-heart"></i>
+                                <h3 id="feature-3-title">Options Saines</h3>
+                                <p id="feature-3-text">Plats équilibrés avec informations nutritionnelles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Healthy food">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popular-items">
+            <div class="container">
+                <h2 class="section-title" id="popular-title">Nos Plats Populaires</h2>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-info">
+                            <div class="item-header">
+                                <div class="item-name">Riz escalop salad oeuf</div>
+                                <div class="item-price">350 DA</div>
+                            </div>
+                            <div class="item-description">Riz avec escalope, salade et œuf</div>
+                            <div class="item-calories">720 KCal</div>
+                            <button class="add-to-cart-btn" data-id="1">Ajouter au Panier</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-info">
+                            <div class="item-header">
+                                <div class="item-name">Pasta escalop salad</div>
+                                <div class="item-price">400 DA</div>
+                            </div>
+                            <div class="item-description">Pâtes avec escalope et salade</div>
+                            <div class="item-calories">750 KCal</div>
+                            <button class="add-to-cart-btn" data-id="2">Ajouter au Panier</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-info">
+                            <div class="item-header">
+                                <div class="item-name">Bourgouil au poulet</div>
+                                <div class="item-price">450 DA</div>
+                            </div>
+                            <div class="item-description">Boulgour au poulet</div>
+                            <div class="item-calories">640 KCal</div>
+                            <button class="add-to-cart-btn" data-id="4">Ajouter au Panier</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="view-menu-btn" id="view-menu-btn">Voir Tout le Menu</button>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2 id="about-title">À Propos de YD Healthy Food</h2>
-                    <p id="about-text-1">Nous sommes passionnés par la nourriture saine et équilibrée. Notre mission est de fournir des repas délicieux et nutritifs à nos clients à Jijel.</p>
-                    <p id="about-text-2">Tous nos plats sont préparés avec des ingrédients frais et de qualité, sans conservateurs ni additifs artificiels.</p>
-                    <div class="features">
-                        <div class="feature">
-                            <i class="fas fa-leaf"></i>
-                            <h3 id="feature-1-title">Ingrédients Frais</h3>
-                            <p id="feature-1-text">Utilisation quotidienne d'ingrédients frais et locaux</p>
+    <!-- Menu Page -->
+    <section id="menu-page" class="page">
+        <div class="menu-hero">
+            <div class="container">
+                <h1 id="menu-page-title">Notre Menu Complet</h1>
+                <p id="menu-page-subtitle">Découvrez toutes nos options saines et délicieuses</p>
+            </div>
+        </div>
+
+        <div class="menu-categories">
+            <div class="container">
+                <!-- Food Boxes -->
+                <div class="menu-category">
+                    <h2 id="boxes-title">Boxes</h2>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Riz escalop salad oeuf</div>
+                                    <div class="item-price">350 DA</div>
+                                </div>
+                                <div class="item-description">Riz avec escalope, salade et œuf</div>
+                                <div class="item-calories">720 KCal</div>
+                                <button class="add-to-cart-btn" data-id="1">Ajouter au Panier</button>
+                            </div>
                         </div>
-                        <div class="feature">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Pasta escalop salad</div>
+                                    <div class="item-price">400 DA</div>
+                                </div>
+                                <div class="item-description">Pâtes avec escalope et salade</div>
+                                <div class="item-calories">750 KCal</div>
+                                <button class="add-to-cart-btn" data-id="2">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Soup citrouille avec un toast</div>
+                                    <div class="item-price">450 DA</div>
+                                </div>
+                                <div class="item-description">Soupe de citrouille servie avec un toast</div>
+                                <div class="item-calories">500 KCal</div>
+                                <button class="add-to-cart-btn" data-id="3">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Bourgouil au poulet</div>
+                                    <div class="item-price">450 DA</div>
+                                </div>
+                                <div class="item-description">Boulgour au poulet</div>
+                                <div class="item-calories">640 KCal</div>
+                                <button class="add-to-cart-btn" data-id="4">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Salad Cesar</div>
+                                    <div class="item-price">300 DA</div>
+                                </div>
+                                <div class="item-description">Salade César classique</div>
+                                <div class="item-calories">550 KCal</div>
+                                <button class="add-to-cart-btn" data-id="5">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Salad thon oeuf</div>
+                                    <div class="item-price">400 DA</div>
+                                </div>
+                                <div class="item-description">Salade de thon avec œuf</div>
+                                <div class="item-calories">580 KCal</div>
+                                <button class="add-to-cart-btn" data-id="6">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Drinks -->
+                <div class="menu-category">
+                    <h2 id="drinks-title">Boissons</h2>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Jus banan date</div>
+                                    <div class="item-price">300 DA</div>
+                                </div>
+                                <div class="item-description">Jus naturel de banane et datte</div>
+                                <button class="add-to-cart-btn" data-id="7">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Vishy</div>
+                                    <div class="item-price">70 DA</div>
+                                </div>
+                                <div class="item-description">Eau minérale Vishy</div>
+                                <button class="add-to-cart-btn" data-id="8">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Bouteille d'eau</div>
+                                    <div class="item-price">40 DA</div>
+                                </div>
+                                <div class="item-description">Bouteille d'eau minérale</div>
+                                <button class="add-to-cart-btn" data-id="9">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Supplements -->
+                <div class="menu-category">
+                    <h2 id="supplements-title">Suppléments</h2>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Œuf supplémentaire</div>
+                                    <div class="item-price">50 DA</div>
+                                </div>
+                                <div class="item-description">Ajouter un œuf supplémentaire</div>
+                                <button class="add-to-cart-btn" data-id="10">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <div class="item-header">
+                                    <div class="item-name">Escalop supplémentaire</div>
+                                    <div class="item-price">50 DA</div>
+                                </div>
+                                <div class="item-description">Ajouter une escalope supplémentaire</div>
+                                <button class="add-to-cart-btn" data-id="11">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <div class="container">
+                <h2 id="ready-to-order-title">Prêt à commander?</h2>
+                <p id="ready-to-order-text">Passez votre commande en ligne et recevez votre nourriture saine rapidement!</p>
+                <button class="order-btn" id="order-now-btn">Commander Maintenant</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Page -->
+    <section id="order-page" class="page">
+        <div class="order-hero">
+            <div class="container">
+                <h1 id="order-page-title">Passer Votre Commande</h1>
+                <p id="order-page-subtitle">Remplissez le formulaire ci-dessous pour commander vos plats préférés</p>
+            </div>
+        </div>
+
+        <div class="order-form-section">
+            <div class="container">
+                <div class="order-form-container">
+                    <form class="order-form" id="order-form">
+                        <h2 id="customer-info-title">Informations du Client</h2>
+                        
+                        <div class="form-group">
+                            <label for="customer-name" id="name-label">Nom Complet *</label>
+                            <input type="text" id="customer-name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customer-phone" id="phone-label">Numéro de Téléphone *</label>
+                            <input type="tel" id="customer-phone" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label id="delivery-label">Type de Commande</label>
+                            <div class="delivery-options">
+                                <div class="delivery-option">
+                                    <input type="radio" id="delivery-yes" name="delivery" value="yes" checked>
+                                    <label for="delivery-yes" id="delivery-yes-label">
+                                        <i class="fas fa-truck"></i>
+                                        <span>Livraison (150 DA - Jijel uniquement)</span>
+                                    </label>
+                                </div>
+                                <div class="delivery-option">
+                                    <input type="radio" id="delivery-no" name="delivery" value="no">
+                                    <label for="delivery-no" id="delivery-no-label">
+                                        <i class="fas fa-store"></i>
+                                        <span>Ramassage en magasin</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="address-group">
+                            <label for="customer-address" id="address-label">Adresse de Livraison *</label>
+                            <input type="text" id="customer-address" class="form-control" placeholder="Entrez votre adresse complète">
+                        </div>
+                        
+                        <h2 id="order-items-title">Votre Commande <span id="edit-cart-btn" class="edit-cart-btn">✏️ Modifier</span></h2>
+                        
+                        <!-- Order Items loaded from cart -->
+                        <div class="order-summary" id="order-summary">
+                            <!-- Items will be loaded here -->
+                        </div>
+                        
+                        <div class="order-total" id="order-total-display">
+                            <span id="total-text">Total:</span>
+                            <span id="order-total">0 DA</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="special-notes" id="notes-label">Notes Spéciales (optionnel)</label>
+                            <textarea id="special-notes" class="form-control" rows="3" placeholder="Allergies, instructions spéciales, etc."></textarea>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button type="button" class="back-to-menu-btn" id="back-to-menu-btn">
+                                <i class="fas fa-arrow-left"></i> Ajouter plus d'articles
+                            </button>
+                            <button type="submit" class="submit-order" id="submit-order">Confirmer la Commande</button>
+                        </div>
+                        
+                        <p class="order-note" id="order-note">
+                            <i class="fas fa-info-circle"></i>
+                            Nous vous contacterons pour confirmer votre commande dans les 15 minutes.
+                        </p>
+                    </form>
+                    
+                    <div class="order-help">
+                        <h3 id="need-help-title">Besoin d'aide?</h3>
+                        <div class="help-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4 id="call-us-title">Appelez-nous</h4>
+                                <p id="call-us-text">0542299391</p>
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4 id="hours-title">Heures d'ouverture</h4>
+                                <p id="hours-text">Lundi - Dimanche: 10h00 - 22h00</p>
+                            </div>
+                        </div>
+                        <div class="help-item">
                             <i class="fas fa-truck"></i>
-                            <h3 id="feature-2-title">Livraison Rapide</h3>
-                            <p id="feature-2-text">Livraison à domicile en moins de 45 minutes</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-heart"></i>
-                            <h3 id="feature-3-title">Options Saines</h3>
-                            <p id="feature-3-text">Plats équilibrés avec informations nutritionnelles</p>
+                            <div>
+                                <h4 id="delivery-info-title">Information de livraison</h4>
+                                <p id="delivery-info-text">Livraison: 150 DA (Jijel uniquement)</p>
+                                <p id="delivery-time-text">Temps de livraison: 30-45 minutes</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Healthy food">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Popular Items -->
-        <!-- Popular Items -->
-    <section class="popular-items">
-        <div class="container">
-            <h2 class="section-title" id="popular-title">Nos Plats Populaires</h2>
-            <div class="menu-items">
-                <div class="menu-item">
-                    <div class="item-info">
-                        <div class="item-header">
-                            <div class="item-name">Riz escalop salad oeuf</div>
-                            <div class="item-price">350 DA</div>
+    <!-- Contact Page -->
+    <section id="contact-page" class="page">
+        <div class="contact-hero">
+            <div class="container">
+                <h1 id="contact-page-title">Contactez-Nous</h1>
+                <p id="contact-page-subtitle">Nous sommes là pour répondre à vos questions</p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="container">
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h2 id="get-in-touch-title">Prenez Contact</h2>
+                        <p id="get-in-touch-text">Nous serions ravis de vous entendre. N'hésitez pas à nous contacter pour toute question, commande ou feedback.</p>
+                        
+                        <div class="contact-details">
+                            <div class="contact-detail">
+                                <i class="fas fa-phone contact-icon"></i>
+                                <div>
+                                    <h3 id="phone-title">Téléphone</h3>
+                                    <p id="phone-number">0542299391</p>
+                                    <p id="phone-hours">Lundi - Dimanche: 10h00 - 22h00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-detail">
+                                <i class="fas fa-map-marker-alt contact-icon"></i>
+                                <div>
+                                    <h3 id="location-title">Adresse</h3>
+                                    <p id="location-text">Jijel, Algérie</p>
+                                    <p id="delivery-area">Zone de livraison: Jijel uniquement</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-detail">
+                                <i class="fas fa-truck contact-icon"></i>
+                                <div>
+                                    <h3 id="delivery-title">Livraison</h3>
+                                    <p id="delivery-cost">Coût: 150 DA</p>
+                                    <p id="delivery-time">Temps: 30-45 minutes</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="item-description">Riz avec escalope, salade et œuf</div>
-                        <div class="item-calories">720 KCal</div>
-                        <button class="add-to-cart-btn">Ajouter au Panier</button>
+                        
+                        <div class="social-media-contact">
+                            <h3 id="follow-us-title">Suivez-Nous sur les Réseaux Sociaux</h3>
+                            <div class="social-icons">
+                                <a href="https://facebook.com/YD healthy food jijel" class="social-icon" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <span>Facebook</span>
+                                </a>
+                                <a href="https://instagram.com/healthy_food_jijel" class="social-icon" target="_blank">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="https://tiktok.com/@yd_healthy_food" class="social-icon" target="_blank">
+                                    <i class="fab fa-tiktok"></i>
+                                    <span>TikTok</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-info">
-                        <div class="item-header">
-                            <div class="item-name">Pasta escalop salad</div>
-                            <div class="item-price">400 DA</div>
-                        </div>
-                        <div class="item-description">Pâtes avec escalope et salade</div>
-                        <div class="item-calories">750 KCal</div>
-                        <button class="add-to-cart-btn">Ajouter au Panier</button>
-                    </div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-info">
-                        <div class="item-header">
-                            <div class="item-name">Bourgouil au poulet</div>
-                            <div class="item-price">450 DA</div>
-                        </div>
-                        <div class="item-description">Boulgour au poulet</div>
-                        <div class="item-calories">640 KCal</div>
-                        <button class="add-to-cart-btn">Ajouter au Panier</button>
+                    
+                    <div class="contact-form-container">
+                        <h2 id="send-message-title">Envoyez-nous un Message</h2>
+                        <form class="contact-form" id="contact-form">
+                            <div class="form-group">
+                                <label for="contact-name" id="contact-name-label">Nom Complet *</label>
+                                <input type="text" id="contact-name" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-phone" id="contact-phone-label">Numéro de Téléphone *</label>
+                                <input type="tel" id="contact-phone" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-email" id="contact-email-label">Email (optionnel)</label>
+                                <input type="email" id="contact-email" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-subject" id="contact-subject-label">Sujet *</label>
+                                <select id="contact-subject" class="form-control" required>
+                                    <option value="">Sélectionnez un sujet</option>
+                                    <option value="question">Question sur le menu</option>
+                                    <option value="order">Question sur une commande</option>
+                                    <option value="delivery">Question sur la livraison</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-message" id="contact-message-label">Message *</label>
+                                <textarea id="contact-message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-contact" id="submit-contact">Envoyer le Message</button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="text-center">
-                <a href="menu.html" class="view-menu-btn" id="view-menu-btn">Voir Tout le Menu</a>
+        </div>
+
+        <div class="faq-section">
+            <div class="container">
+                <h2 id="faq-title">Questions Fréquentes</h2>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3 id="faq1-question">Quelle est votre zone de livraison?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p id="faq1-answer">Nous livrons uniquement dans la ville de Jijel. Le coût de livraison est de 150 DA.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3 id="faq2-question">Quels sont vos horaires d'ouverture?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p id="faq2-answer">Nous sommes ouverts du lundi au dimanche, de 10h00 à 22h00.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3 id="faq3-question">Puis-je modifier ma commande après l'avoir passée?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p id="faq3-answer">Vous pouvez modifier votre commande dans les 10 minutes suivant sa soumission en nous appelant au 0542299391.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3 id="faq4-question">Acceptez-vous les paiements en ligne?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p id="faq4-answer">Pour le moment, nous acceptons uniquement les paiements en espèces à la livraison ou lors du ramassage en magasin.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -130,10 +596,11 @@
                 <div class="footer-links">
                     <h4 id="quick-links-title">Liens Rapides</h4>
                     <ul>
-                        <li><a href="index.html">Accueil</a></li>
-                        <li><a href="menu.html">Menu</a></li>
-                        <li><a href="order.html">Commander</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#" data-page="home" class="nav-link">Accueil</a></li>
+                        <li><a href="#" data-page="menu" class="nav-link">Menu</a></li>
+                        <li><a href="#" data-page="order" class="nav-link">Commander</a></li>
+                        <li><a href="#" data-page="contact" class="nav-link">Contact</a></li>
+                        <li><a href="admin.html" target="_blank">Admin</a></li>
                     </ul>
                 </div>
                 <div class="footer-contact">
@@ -149,19 +616,582 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Shopping Cart Sidebar -->
+    <div id="shopping-cart" class="cart-container">
+        <div class="cart-header">
+            <h3 id="cart-title">Votre Panier</h3>
+            <div class="cart-count">0</div>
+            <button class="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items"></div>
+            <div class="cart-total">
+                <span id="cart-total-text">Total:</span>
+                <span id="cart-total-price">0 DA</span>
+            </div>
+            <div class="cart-actions">
+                <button class="cart-action-btn view-cart-btn" id="view-cart-btn">Voir Panier</button>
+                <button class="cart-action-btn checkout-btn" id="checkout-btn">Commander</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Cart Button -->
+    <div class="floating-cart-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="cart-icon-badge">0</div>
+    </div>
+
     <script>
-        // Initialize home page
+        // SINGLE PAGE APPLICATION - All JavaScript in one file
+        // This solves GitHub Pages localStorage issues
+        
+        // Menu items data with proper IDs
+        const menuItems = {
+            1: { name: { fr: "Riz escalop salad oeuf", ar: "أرز إسكالوب سلطة بيض" }, price: 350 },
+            2: { name: { fr: "Pasta escalop salad", ar: "باستا إسكالوب سلطة" }, price: 400 },
+            3: { name: { fr: "Soup citrouille avec un toast", ar: "شوربة قرع مع توست" }, price: 450 },
+            4: { name: { fr: "Bourgouil au poulet", ar: "البركولس بالدجاج" }, price: 450 },
+            5: { name: { fr: "Salad Cesar", ar: "سلطة سيزر" }, price: 300 },
+            6: { name: { fr: "Salad thon oeuf", ar: "سلطة تونة بيض" }, price: 400 },
+            7: { name: { fr: "Jus banan date", ar: "عصير موز تمر" }, price: 300 },
+            8: { name: { fr: "Vishy", ar: "فيشي" }, price: 70 },
+            9: { name: { fr: "Bouteille d'eau", ar: "قارورة ماء" }, price: 40 },
+            10: { name: { fr: "Œuf supplémentaire", ar: "بيضة إضافية" }, price: 50 },
+            11: { name: { fr: "Escalop supplémentaire", ar: "إسكالوب إضافي" }, price: 50 }
+        };
+
+        // Initialize cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('ydCart')) || [];
+        let currentLang = localStorage.getItem('ydLanguage') || 'fr';
+
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            // Set active nav link
-            const currentPage = window.location.pathname.split('/').pop();
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentPage) {
-                    link.classList.add('active');
+            // Setup language switcher
+            document.getElementById('lang-fr').addEventListener('click', () => switchLanguage('fr'));
+            document.getElementById('lang-ar').addEventListener('click', () => switchLanguage('ar'));
+            
+            // Setup navigation
+            setupNavigation();
+            
+            // Setup cart
+            updateCartDisplay();
+            setupCartEventListeners();
+            
+            // Setup add to cart buttons
+            setupAddToCartButtons();
+            
+            // Setup order form
+            setupOrderForm();
+            
+            // Setup contact form
+            setupContactForm();
+            
+            // Setup FAQ accordion
+            setupFAQAccordion();
+            
+            // Setup buttons
+            document.getElementById('hero-order-btn').addEventListener('click', () => showPage('order'));
+            document.getElementById('view-menu-btn').addEventListener('click', () => showPage('menu'));
+            document.getElementById('order-now-btn').addEventListener('click', () => showPage('order'));
+            document.getElementById('back-to-menu-btn').addEventListener('click', () => showPage('menu'));
+            document.getElementById('view-cart-btn').addEventListener('click', () => showPage('order'));
+            document.getElementById('checkout-btn').addEventListener('click', () => showPage('order'));
+            
+            // Set initial language
+            switchLanguage(currentLang);
+        });
+
+        // Navigation functions
+        function setupNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Update active nav
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        function showPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show selected page
+            const pageElement = document.getElementById(page + '-page');
+            if (pageElement) {
+                pageElement.classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+                
+                // Load cart items on order page
+                if (page === 'order') {
+                    loadOrderFromCart();
+                }
+            }
+        }
+
+        // Language functions
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('ydLanguage', lang);
+            
+            // Update button states
+            document.getElementById('lang-fr').classList.toggle('active', lang === 'fr');
+            document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
+            
+            // Update body direction
+            document.body.classList.toggle('ar', lang === 'ar');
+            
+            // Update all translatable text (simplified version)
+            updateAllText();
+            updateCartDisplay();
+        }
+
+        function updateAllText() {
+            // This would update all text based on language
+            // For simplicity, we'll just update cart and buttons
+            updateCartDisplay();
+        }
+
+        // Cart functions
+        function setupCartEventListeners() {
+            // Cart toggle
+            document.querySelector('.cart-header').addEventListener('click', toggleCart);
+            document.querySelector('.cart-close').addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeCart();
+            });
+            
+            // Floating cart button
+            document.querySelector('.floating-cart-btn').addEventListener('click', toggleCart);
+            
+            // Close cart when clicking outside
+            document.addEventListener('click', (e) => {
+                const cart = document.getElementById('shopping-cart');
+                if (!cart.contains(e.target) && !e.target.closest('.floating-cart-btn')) {
+                    closeCart();
                 }
             });
-        });
+        }
+
+        function toggleCart() {
+            document.getElementById('shopping-cart').classList.toggle('open');
+        }
+
+        function openCart() {
+            document.getElementById('shopping-cart').classList.add('open');
+        }
+
+        function closeCart() {
+            document.getElementById('shopping-cart').classList.remove('open');
+        }
+
+        function setupAddToCartButtons() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-to-cart-btn')) {
+                    const itemId = e.target.getAttribute('data-id');
+                    if (itemId && menuItems[itemId]) {
+                        addToCart(itemId);
+                        openCart();
+                    }
+                }
+            });
+        }
+
+        function addToCart(itemId) {
+            const item = menuItems[itemId];
+            const existingItem = cart.find(i => i.id == itemId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: itemId,
+                    name: item.name[currentLang] || item.name.fr,
+                    price: item.price,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            showNotification('Article ajouté au panier!');
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.querySelector('.cart-count');
+            const cartTotal = document.getElementById('cart-total-price');
+            const cartBadge = document.querySelector('.cart-icon-badge');
+            
+            cartItems.innerHTML = '';
+            let totalItems = 0;
+            let totalPrice = 0;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Votre panier est vide</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    totalItems += item.quantity;
+                    totalPrice += item.price * item.quantity;
+                    
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price} DA x ${item.quantity}</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                            </div>
+                            <button class="remove-btn" data-id="${item.id}">Retirer</button>
+                        </div>
+                    `;
+                    cartItems.appendChild(cartItem);
+                });
+                
+                // Add event listeners for cart controls
+                cartItems.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const itemId = this.getAttribute('data-id');
+                        updateCartQuantity(itemId, -1);
+                    });
+                });
+                
+                cartItems.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const itemId = this.getAttribute('data-id');
+                        updateCartQuantity(itemId, 1);
+                    });
+                });
+                
+                cartItems.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const itemId = this.getAttribute('data-id');
+                        removeFromCart(itemId);
+                    });
+                });
+            }
+            
+            cartCount.textContent = totalItems;
+            cartTotal.textContent = `${totalPrice} DA`;
+            if (cartBadge) cartBadge.textContent = totalItems;
+            
+            // Update cart button texts
+            document.getElementById('cart-title').textContent = currentLang === 'fr' ? 'Votre Panier' : 'سلة التسوق';
+            document.getElementById('cart-total-text').textContent = currentLang === 'fr' ? 'Total:' : 'المجموع:';
+            document.getElementById('view-cart-btn').textContent = currentLang === 'fr' ? 'Voir Panier' : 'عرض السلة';
+            document.getElementById('checkout-btn').textContent = currentLang === 'fr' ? 'Commander' : 'الدفع';
+            
+            // Update add to cart buttons
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.textContent = currentLang === 'fr' ? 'Ajouter au Panier' : 'أضف إلى السلة';
+            });
+        }
+
+        function updateCartQuantity(itemId, change) {
+            const item = cart.find(i => i.id == itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(itemId);
+                } else {
+                    saveCart();
+                }
+            }
+        }
+
+        function removeFromCart(itemId) {
+            cart = cart.filter(i => i.id != itemId);
+            saveCart();
+        }
+
+        function saveCart() {
+            localStorage.setItem('ydCart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        // Order page functions
+        function loadOrderFromCart() {
+            const orderSummary = document.getElementById('order-summary');
+            const orderTotal = document.getElementById('order-total');
+            
+            orderSummary.innerHTML = '';
+            let total = 0;
+            
+            if (cart.length === 0) {
+                orderSummary.innerHTML = `
+                    <div class="empty-order">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Votre panier est vide. <a href="#" onclick="showPage('menu')">Ajoutez des articles depuis le menu.</a></p>
+                    </div>
+                `;
+                orderTotal.textContent = '0 DA';
+                return;
+            }
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item editable';
+                orderItem.innerHTML = `
+                    <div class="order-item-info">
+                        <span class="order-item-name">${item.name}</span>
+                        <div class="order-item-controls">
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                            </div>
+                            <span class="order-item-price">${itemTotal} DA</span>
+                            <button class="remove-order-item" data-id="${item.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                orderSummary.appendChild(orderItem);
+            });
+            
+            // Add event listeners
+            orderSummary.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    updateCartQuantity(itemId, -1);
+                    loadOrderFromCart();
+                    updateOrderTotal();
+                });
+            });
+            
+            orderSummary.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    updateCartQuantity(itemId, 1);
+                    loadOrderFromCart();
+                    updateOrderTotal();
+                });
+            });
+            
+            orderSummary.querySelectorAll('.remove-order-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    removeFromCart(itemId);
+                    loadOrderFromCart();
+                    updateOrderTotal();
+                });
+            });
+            
+            // Setup edit cart button
+            document.getElementById('edit-cart-btn').addEventListener('click', function() {
+                const orderItems = document.querySelectorAll('.order-item.editable');
+                orderItems.forEach(item => {
+                    item.classList.toggle('edit-mode');
+                });
+                
+                if (this.textContent.includes('Modifier')) {
+                    this.textContent = '✓ Terminer';
+                    this.classList.add('editing');
+                } else {
+                    this.textContent = '✏️ Modifier';
+                    this.classList.remove('editing');
+                }
+            });
+            
+            updateOrderTotal();
+        }
+
+        function updateOrderTotal() {
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+            });
+            
+            // Add delivery cost if selected
+            const deliveryYes = document.getElementById('delivery-yes');
+            if (deliveryYes && deliveryYes.checked) {
+                total += 150;
+            }
+            
+            document.getElementById('order-total').textContent = `${total} DA`;
+            return total;
+        }
+
+        function setupOrderForm() {
+            const orderForm = document.getElementById('order-form');
+            const deliveryYes = document.getElementById('delivery-yes');
+            const deliveryNo = document.getElementById('delivery-no');
+            const addressGroup = document.getElementById('address-group');
+            const addressInput = document.getElementById('customer-address');
+            
+            // Delivery toggle
+            function updateDeliveryOption() {
+                if (deliveryYes.checked) {
+                    addressGroup.style.display = 'block';
+                    addressInput.required = true;
+                } else {
+                    addressGroup.style.display = 'none';
+                    addressInput.required = false;
+                }
+                updateOrderTotal();
+            }
+            
+            if (deliveryYes && deliveryNo) {
+                deliveryYes.addEventListener('change', updateDeliveryOption);
+                deliveryNo.addEventListener('change', updateDeliveryOption);
+                updateDeliveryOption();
+            }
+            
+            // Form submission
+            if (orderForm) {
+                orderForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    if (cart.length === 0) {
+                        alert('Votre panier est vide!');
+                        return;
+                    }
+                    
+                    const customerName = document.getElementById('customer-name').value;
+                    const customerPhone = document.getElementById('customer-phone').value;
+                    const deliveryType = document.querySelector('input[name="delivery"]:checked').value;
+                    const customerAddress = deliveryType === 'yes' ? document.getElementById('customer-address').value : '';
+                    const specialNotes = document.getElementById('special-notes').value;
+                    
+                    // Validate
+                    if (!customerName || !customerPhone) {
+                        alert('Veuillez remplir tous les champs obligatoires.');
+                        return;
+                    }
+                    
+                    if (deliveryType === 'yes' && !customerAddress) {
+                        alert('Veuillez entrer votre adresse de livraison.');
+                        return;
+                    }
+                    
+                    // Calculate total
+                    let total = 0;
+                    cart.forEach(item => total += item.price * item.quantity);
+                    if (deliveryType === 'yes') total += 150;
+                    
+                    // Create order
+                    const orderId = 'ORD-' + Date.now().toString().slice(-6);
+                    const order = {
+                        id: orderId,
+                        customerName,
+                        phone: customerPhone,
+                        deliveryType: deliveryType === 'yes' ? 'delivery' : 'pickup',
+                        address: customerAddress,
+                        items: [...cart], // Copy cart items
+                        notes: specialNotes,
+                        total: total,
+                        status: 'new',
+                        date: new Date().toISOString(),
+                        timestamp: Date.now()
+                    };
+                    
+                    // Save order
+                    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
+                    orders.push(order);
+                    localStorage.setItem('ydOrders', JSON.stringify(orders));
+                    
+                    // Show confirmation
+                    alert(`Commande confirmée!\n\nID: ${orderId}\nTotal: ${total} DA\n\nMerci pour votre commande!`);
+                    
+                    // Clear cart
+                    cart = [];
+                    localStorage.removeItem('ydCart');
+                    updateCartDisplay();
+                    loadOrderFromCart();
+                    
+                    // Reset form
+                    orderForm.reset();
+                    updateDeliveryOption();
+                    
+                    // Show home page
+                    showPage('home');
+                });
+            }
+        }
+
+        function setupContactForm() {
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Merci pour votre message! Nous vous répondrons bientôt.');
+                    this.reset();
+                });
+            }
+        }
+
+        function setupFAQAccordion() {
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', function() {
+                    const item = this.closest('.faq-item');
+                    document.querySelectorAll('.faq-item').forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    item.classList.toggle('active');
+                });
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'cart-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--primary-color);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                z-index: 1002;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            // Add animation style
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>
