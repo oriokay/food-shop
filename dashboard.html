@@ -971,6 +971,31 @@
             const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ...');
             audio.play().catch(e => console.log('Audio play failed:', e));
         }
+        // In dashboard.html script, ensure it loads orders correctly:
+function loadOrdersFromStorage() {
+    try {
+        const storedOrders = localStorage.getItem('ydOrders');
+        console.log('Loading orders from localStorage:', storedOrders);
+        if (storedOrders) {
+            const orders = JSON.parse(storedOrders);
+            console.log('Parsed orders:', orders);
+            return orders;
+        }
+    } catch (error) {
+        console.error('Error loading orders:', error);
+    }
+    return [];
+}
+
+// And update the loadOrders function to log what's happening:
+function loadOrders(filter = 'all') {
+    console.log('Loading orders with filter:', filter);
+    orders = loadOrdersFromStorage();
+    console.log('Total orders found:', orders.length);
+    
+    // ... rest of your code ...
+}
     </script>
 </body>
+
 </html>
