@@ -575,7 +575,17 @@
         });
         
         // Order Management System
-        let orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
+        supabase
+  .channel('orders')
+  .on('postgres_changes', 
+      { event: '*', schema: 'public', table: 'orders' }, 
+      payload => {
+          console.log('Change received!', payload);
+          loadOrdersFromDatabase();
+      }
+  )
+  .subscribe();
+
         
         // Sample orders for demonstration
         if (orders.length === 0) {
@@ -973,4 +983,5 @@
         }
     </script>
 </body>
+
 </html>
