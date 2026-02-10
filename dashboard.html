@@ -1,3 +1,5 @@
+[file name]: dashboard.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,6 +8,8 @@
     <title>Tableau de Bord - YD Healthy Food</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- Add Supabase JS library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --admin-sidebar: #2c3e50;
@@ -355,6 +359,25 @@
             border-top: 2px solid var(--primary-color);
         }
         
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading i {
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         /* Print Styles */
         @media print {
             .admin-sidebar,
@@ -495,6 +518,7 @@
                                 <option value="preparing">En préparation</option>
                                 <option value="ready">Prêtes</option>
                                 <option value="delivered">Livrées</option>
+                                <option value="cancelled">Annulées</option>
                             </select>
                             <button class="refresh-btn" id="refresh-orders">
                                 <i class="fas fa-sync-alt"></i> Actualiser
@@ -515,7 +539,13 @@
                                 </tr>
                             </thead>
                             <tbody id="orders-table-body">
-                                <!-- Orders will be loaded here -->
+                                <tr id="loading-row">
+                                    <td colspan="6">
+                                        <div class="loading">
+                                            <i class="fas fa-spinner"></i> Chargement des commandes...
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -538,6 +568,14 @@
     </div>
     
     <script>
+        // ==================== SUPABASE CONFIGURATION ====================
+        const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = 'your-public-anon-key'; // Replace with your Supabase anon key
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // ==================== ADMIN AUTHENTICATION ====================
         // Check if user is logged in
         if (localStorage.getItem('ydAdminLoggedIn') !== 'true') {
             window.location.href = 'admin.html';
@@ -574,73 +612,66 @@
             window.location.href = 'admin.html';
         });
         
-        // Order Management System
-        supabase
-  .channel('orders')
-  .on('postgres_changes', 
-      { event: '*', schema: 'public', table: 'orders' }, 
-      payload => {
-          console.log('Change received!', payload);
-          loadOrdersFromDatabase();
-      }
-  )
-  .subscribe();
-
+        // ==================== ORDER MANAGEMENT SYSTEM ====================
+        let orders = [];
+        let realtimeSubscription = null;
         
-        // Sample orders for demonstration
-        if (orders.length === 0) {
-            orders = [
-                {
-                    id: generateOrderId(),
-                    customerName: "Ahmed Benali",
-                    phone: "0542299391",
-                    deliveryType: "delivery",
-                    address: "123 Rue des Oliviers, Jijel",
-                    items: [
-                        { name: "Riz escalop salad oeuf", quantity: 2, price: 350 },
-                        { name: "Jus banan date", quantity: 1, price: 300 }
-                    ],
-                    notes: "Pas de piment s'il vous plaît",
-                    total: 1000,
-                    status: "new",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: generateOrderId(),
-                    customerName: "Fatima Zohra",
-                    phone: "0551234567",
-                    deliveryType: "pickup",
-                    address: "",
-                    items: [
-                        { name: "Salad Cesar", quantity: 1, price: 300 },
-                        { name: "Bouteille d'eau", quantity: 2, price: 40 }
-                    ],
-                    notes: "",
-                    total: 380,
-                    status: "preparing",
-                    date: new Date(Date.now() - 3600000).toISOString() // 1 hour ago
+        // Load and display orders from Supabase
+        async function loadOrders(filter = 'all') {
+            try {
+                // Show loading state
+                const loadingRow = document.getElementById('loading-row');
+                if (loadingRow) {
+                    loadingRow.style.display = 'table-row';
                 }
-            ];
-            localStorage.setItem('ydOrders', JSON.stringify(orders));
+                
+                let query = supabase
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                // Apply filter if not 'all'
+                if (filter !== 'all') {
+                    query = query.eq('status', filter);
+                }
+                
+                const { data, error } = await query;
+                
+                if (error) {
+                    throw error;
+                }
+                
+                orders = data || [];
+                
+                // Update stats
+                updateStats();
+                
+                // Display orders
+                displayOrders();
+                
+                // Hide loading
+                if (loadingRow) {
+                    loadingRow.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('orders-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #dc3545;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p>Erreur de chargement des commandes</p>
+                            <p style="font-size: 0.9rem;">${error.message}</p>
+                        </td>
+                    </tr>
+                `;
+            }
         }
         
-        function generateOrderId() {
-            return 'ORD-' + Date.now().toString().slice(-6);
-        }
-        
-        // Load and display orders
-        function loadOrders(filter = 'all') {
+        function displayOrders() {
             const ordersTable = document.getElementById('orders-table-body');
-            ordersTable.innerHTML = '';
             
-            const filteredOrders = filter === 'all' 
-                ? orders 
-                : orders.filter(order => order.status === filter);
-            
-            // Update stats
-            updateStats();
-            
-            if (filteredOrders.length === 0) {
+            if (orders.length === 0) {
                 ordersTable.innerHTML = `
                     <tr>
                         <td colspan="6" style="text-align: center; padding: 40px;">
@@ -652,14 +683,11 @@
                 return;
             }
             
-            // Sort by date (newest first)
-            filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+            let ordersHtml = '';
             
-            filteredOrders.forEach(order => {
-                const row = document.createElement('tr');
-                
+            orders.forEach(order => {
                 // Format date
-                const orderDate = new Date(order.date);
+                const orderDate = new Date(order.created_at);
                 const dateString = orderDate.toLocaleDateString('fr-FR', {
                     day: '2-digit',
                     month: '2-digit',
@@ -678,39 +706,48 @@
                     default: statusText = 'Nouvelle'; statusClass = 'status-new';
                 }
                 
-                row.innerHTML = `
-                    <td class="order-id">${order.id}</td>
-                    <td>${order.customerName}</td>
-                    <td>${dateString}</td>
-                    <td>${order.total} DA</td>
-                    <td><span class="order-status ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <div class="order-actions">
-                            <button class="action-btn view-btn" data-id="${order.id}">
-                                <i class="fas fa-eye"></i> Voir
-                            </button>
-                            <button class="action-btn update-btn" data-id="${order.id}">
-                                <i class="fas fa-edit"></i> Modifier
-                            </button>
-                            <button class="action-btn print-btn" data-id="${order.id}">
-                                <i class="fas fa-print"></i> Imprimer
-                            </button>
-                        </div>
-                    </td>
-                `;
+                // Shorten customer name if too long
+                const customerName = order.customer_name.length > 20 
+                    ? order.customer_name.substring(0, 20) + '...' 
+                    : order.customer_name;
                 
-                ordersTable.appendChild(row);
+                ordersHtml += `
+                    <tr>
+                        <td class="order-id">${order.id}</td>
+                        <td>${customerName}</td>
+                        <td>${dateString}</td>
+                        <td>${order.total} DA</td>
+                        <td><span class="order-status ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="order-actions">
+                                <button class="action-btn view-btn" data-id="${order.id}">
+                                    <i class="fas fa-eye"></i> Voir
+                                </button>
+                                <button class="action-btn update-btn" data-id="${order.id}">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </button>
+                                <button class="action-btn print-btn" data-id="${order.id}">
+                                    <i class="fas fa-print"></i> Imprimer
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
+            
+            ordersTable.innerHTML = ordersHtml;
             
             // Add event listeners to action buttons
             setupOrderActions();
         }
         
         function updateStats() {
-            const today = new Date().toDateString();
-            const todayOrders = orders.filter(order => 
-                new Date(order.date).toDateString() === today
-            );
+            const today = new Date().toISOString().split('T')[0];
+            
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                return orderDate === today;
+            });
             
             const pendingOrders = orders.filter(order => 
                 order.status === 'new' || order.status === 'preparing'
@@ -754,25 +791,35 @@
             });
         }
         
-        function showOrderDetails(orderId) {
-            const order = orders.find(o => o.id === orderId);
+        async function showOrderDetails(orderId) {
+            const order = orders.find(o => o.id == orderId);
             if (!order) return;
             
             document.getElementById('modal-order-id').textContent = orderId;
             
+            // Parse items (stored as JSON string or array)
+            let items = [];
+            try {
+                items = typeof order.items === 'string' 
+                    ? JSON.parse(order.items) 
+                    : order.items || [];
+            } catch (e) {
+                console.error('Error parsing order items:', e);
+            }
+            
             // Format items list
             let itemsHtml = '';
-            order.items.forEach(item => {
+            items.forEach(item => {
                 itemsHtml += `
                     <div class="order-item-detail">
                         <span>${item.name} x${item.quantity}</span>
-                        <span>${item.price * item.quantity} DA</span>
+                        <span>${(item.price * item.quantity)} DA</span>
                     </div>
                 `;
             });
             
             // Format order details
-            const orderDate = new Date(order.date);
+            const orderDate = new Date(order.created_at);
             const dateString = orderDate.toLocaleDateString('fr-FR', {
                 weekday: 'long',
                 year: 'numeric',
@@ -796,10 +843,10 @@
                 <div class="order-details-grid">
                     <div>
                         <h4>Informations Client</h4>
-                        <p><strong>Nom:</strong> ${order.customerName}</p>
+                        <p><strong>Nom:</strong> ${order.customer_name}</p>
                         <p><strong>Téléphone:</strong> ${order.phone}</p>
-                        <p><strong>Type:</strong> ${order.deliveryType === 'delivery' ? 'Livraison' : 'Ramassage'}</p>
-                        ${order.deliveryType === 'delivery' ? `<p><strong>Adresse:</strong> ${order.address}</p>` : ''}
+                        <p><strong>Type:</strong> ${order.delivery_type === 'delivery' ? 'Livraison' : 'Ramassage'}</p>
+                        ${order.delivery_type === 'delivery' ? `<p><strong>Adresse:</strong> ${order.address || 'Non spécifiée'}</p>` : ''}
                         ${order.notes ? `<p><strong>Notes:</strong> ${order.notes}</p>` : ''}
                     </div>
                     <div>
@@ -816,46 +863,218 @@
                 </div>
                 
                 <div class="order-total-detail">
-                    <span>Total:</span>
-                    <span>${order.total} DA</span>
+                    <span>Sous-total:</span>
+                    <span>${order.subtotal || order.total} DA</span>
                 </div>
                 
-                ${order.deliveryType === 'delivery' ? `
-                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 5px;">
-                        <p><strong>Frais de livraison:</strong> 150 DA inclus</p>
+                ${order.delivery_cost > 0 ? `
+                    <div class="order-total-detail">
+                        <span>Livraison:</span>
+                        <span>${order.delivery_cost} DA</span>
                     </div>
                 ` : ''}
+                
+                <div class="order-total-detail" style="color: var(--primary-color); font-size: 1.3rem;">
+                    <span>TOTAL:</span>
+                    <span>${order.total} DA</span>
+                </div>
             `;
             
             document.getElementById('modal-order-details').innerHTML = detailsHtml;
             document.getElementById('order-details-modal').style.display = 'flex';
         }
         
-        function updateOrderStatus(orderId) {
-            const order = orders.find(o => o.id === orderId);
+        async function updateOrderStatus(orderId) {
+            const order = orders.find(o => o.id == orderId);
             if (!order) return;
             
             const currentStatus = order.status;
-            let newStatus;
+            const statusOptions = [
+                { value: 'new', label: 'Nouvelle' },
+                { value: 'preparing', label: 'En préparation' },
+                { value: 'ready', label: 'Prête' },
+                { value: 'delivered', label: 'Livrée' },
+                { value: 'cancelled', label: 'Annulée' }
+            ];
             
-            // Determine next status
-            switch(currentStatus) {
-                case 'new': newStatus = 'preparing'; break;
-                case 'preparing': newStatus = 'ready'; break;
-                case 'ready': newStatus = 'delivered'; break;
-                default: newStatus = 'new';
+            // Create status selection dialog
+            let statusHtml = `<p>Changer le statut de la commande #${orderId}</p>`;
+            statusOptions.forEach(option => {
+                const selected = option.value === currentStatus ? 'selected' : '';
+                statusHtml += `
+                    <div style="margin: 5px 0;">
+                        <input type="radio" id="status-${option.value}" name="newStatus" value="${option.value}" ${selected}>
+                        <label for="status-${option.value}">${option.label}</label>
+                    </div>
+                `;
+            });
+            
+            // Show custom dialog
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%;">
+                    <h3>Modifier le statut</h3>
+                    ${statusHtml}
+                    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                        <button id="cancel-status-btn" style="padding: 8px 15px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">
+                            Annuler
+                        </button>
+                        <button id="confirm-status-btn" style="padding: 8px 15px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Confirmer
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle status update
+            return new Promise((resolve) => {
+                modal.querySelector('#confirm-status-btn').addEventListener('click', async () => {
+                    const selectedStatus = modal.querySelector('input[name="newStatus"]:checked')?.value;
+                    
+                    if (selectedStatus && selectedStatus !== currentStatus) {
+                        try {
+                            const { error } = await supabase
+                                .from('orders')
+                                .update({ status: selectedStatus })
+                                .eq('id', orderId);
+                            
+                            if (error) throw error;
+                            
+                            alert(`Statut de la commande #${orderId} mis à jour!`);
+                            loadOrders(document.getElementById('status-filter').value);
+                        } catch (error) {
+                            console.error('Error updating order status:', error);
+                            alert('Erreur lors de la mise à jour du statut');
+                        }
+                    }
+                    
+                    document.body.removeChild(modal);
+                    resolve();
+                });
+                
+                modal.querySelector('#cancel-status-btn').addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                    resolve();
+                });
+            });
+        }
+        
+        function printOrder(orderId) {
+            const order = orders.find(o => o.id == orderId);
+            if (!order) return;
+            
+            // Parse items
+            let items = [];
+            try {
+                items = typeof order.items === 'string' 
+                    ? JSON.parse(order.items) 
+                    : order.items || [];
+            } catch (e) {
+                console.error('Error parsing order items:', e);
             }
             
-            const confirmUpdate = confirm(
-                `Changer le statut de la commande #${orderId} de "${getStatusText(currentStatus)}" à "${getStatusText(newStatus)}"?`
-            );
+            // Create print content
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Bon de Commande #${orderId}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                        .ticket { max-width: 300px; margin: 0 auto; }
+                        .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 20px; }
+                        .header h2 { margin: 0 0 5px 0; color: #27ae60; }
+                        .info { margin-bottom: 15px; }
+                        .info p { margin: 5px 0; }
+                        .items { margin: 20px 0; }
+                        .item { display: flex; justify-content: space-between; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px dashed #ddd; }
+                        .total { font-weight: bold; font-size: 1.2em; border-top: 2px solid #000; padding-top: 10px; margin-top: 20px; }
+                        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
+                        @media print { 
+                            body { padding: 10px; }
+                            .no-print { display: none; } 
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="ticket">
+                        <div class="header">
+                            <h2>YD Healthy Food Jijel</h2>
+                            <p>0542299391</p>
+                            <p><strong>Bon de Commande</strong></p>
+                        </div>
+                        
+                        <div class="info">
+                            <p><strong>ID:</strong> ${orderId}</p>
+                            <p><strong>Client:</strong> ${order.customer_name}</p>
+                            <p><strong>Téléphone:</strong> ${order.phone}</p>
+                            <p><strong>Type:</strong> ${order.delivery_type === 'delivery' ? 'Livraison' : 'Ramassage'}</p>
+                            ${order.delivery_type === 'delivery' ? `<p><strong>Adresse:</strong> ${order.address || ''}</p>` : ''}
+                            <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString('fr-FR')}</p>
+                            <p><strong>Statut:</strong> ${getStatusText(order.status)}</p>
+                        </div>
+                        
+                        <div class="items">
+                            <h3>Articles:</h3>
+                            ${items.map(item => `
+                                <div class="item">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>${item.price * item.quantity} DA</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        ${order.subtotal ? `
+                            <div class="item">
+                                <span>Sous-total:</span>
+                                <span>${order.subtotal} DA</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${order.delivery_cost > 0 ? `
+                            <div class="item">
+                                <span>Livraison:</span>
+                                <span>${order.delivery_cost} DA</span>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="total">
+                            <span>TOTAL:</span>
+                            <span>${order.total} DA</span>
+                        </div>
+                        
+                        ${order.notes ? `<p style="margin-top: 15px;"><strong>Notes:</strong> ${order.notes}</p>` : ''}
+                        
+                        <div class="footer">
+                            <p>Merci pour votre commande!</p>
+                            <p>Heures: 10h00 - 22h00</p>
+                        </div>
+                        
+                        <button class="no-print" onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer; width: 100%;">
+                            Imprimer ce bon
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `);
             
-            if (confirmUpdate) {
-                order.status = newStatus;
-                localStorage.setItem('ydOrders', JSON.stringify(orders));
-                loadOrders(document.getElementById('status-filter').value);
-                alert(`Statut de la commande #${orderId} mis à jour!`);
-            }
+            printWindow.document.close();
         }
         
         function getStatusText(status) {
@@ -869,119 +1088,66 @@
             }
         }
         
-        function printOrder(orderId) {
-            const order = orders.find(o => o.id === orderId);
-            if (!order) return;
+        // ==================== REALTIME UPDATES ====================
+        async function setupRealtimeUpdates() {
+            if (realtimeSubscription) {
+                await supabase.removeChannel(realtimeSubscription);
+            }
             
-            // Create print content
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Bon de Commande #${orderId}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        .ticket { max-width: 300px; }
-                        .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 20px; }
-                        .info { margin-bottom: 15px; }
-                        .items { margin: 20px 0; }
-                        .item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-                        .total { font-weight: bold; font-size: 1.2em; border-top: 2px solid #000; padding-top: 10px; margin-top: 20px; }
-                        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
-                        @media print { .no-print { display: none; } }
-                    </style>
-                </head>
-                <body>
-                    <div class="ticket">
-                        <div class="header">
-                            <h2>YD Healthy Food Jijel</h2>
-                            <p>0542299391</p>
-                            <p>Bon de Commande</p>
-                        </div>
-                        
-                        <div class="info">
-                            <p><strong>ID:</strong> ${orderId}</p>
-                            <p><strong>Client:</strong> ${order.customerName}</p>
-                            <p><strong>Téléphone:</strong> ${order.phone}</p>
-                            <p><strong>Type:</strong> ${order.deliveryType === 'delivery' ? 'Livraison' : 'Ramassage'}</p>
-                            ${order.deliveryType === 'delivery' ? `<p><strong>Adresse:</strong> ${order.address}</p>` : ''}
-                            <p><strong>Date:</strong> ${new Date(order.date).toLocaleString('fr-FR')}</p>
-                            <p><strong>Statut:</strong> ${getStatusText(order.status)}</p>
-                        </div>
-                        
-                        <div class="items">
-                            <h3>Articles:</h3>
-                            ${order.items.map(item => `
-                                <div class="item">
-                                    <span>${item.name} x${item.quantity}</span>
-                                    <span>${item.price * item.quantity} DA</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="total">
-                            <span>TOTAL:</span>
-                            <span>${order.total} DA</span>
-                        </div>
-                        
-                        ${order.notes ? `<p><strong>Notes:</strong> ${order.notes}</p>` : ''}
-                        
-                        <div class="footer">
-                            <p>Merci pour votre commande!</p>
-                            <p>Heures: 10h00 - 22h00</p>
-                        </div>
-                        
-                        <button class="no-print" onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer;">
-                            Imprimer ce bon
-                        </button>
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
+            realtimeSubscription = supabase
+                .channel('orders-channel')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'orders'
+                    },
+                    () => {
+                        // Reload orders when there's a change
+                        loadOrders(document.getElementById('status-filter').value);
+                    }
+                )
+                .subscribe();
         }
         
-        // Initialize
-        loadOrders();
-        
-        // Event Listeners
-        document.getElementById('status-filter').addEventListener('change', function() {
-            loadOrders(this.value);
+        // ==================== INITIALIZATION ====================
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial orders
+            loadOrders();
+            
+            // Setup realtime updates
+            setupRealtimeUpdates();
+            
+            // Event Listeners
+            document.getElementById('status-filter').addEventListener('change', function() {
+                loadOrders(this.value);
+            });
+            
+            document.getElementById('refresh-orders').addEventListener('click', function() {
+                loadOrders(document.getElementById('status-filter').value);
+            });
+            
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('order-details-modal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('order-details-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
         });
         
-        document.getElementById('refresh-orders').addEventListener('click', function() {
-            loadOrders(document.getElementById('status-filter').value);
-        });
-        
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('order-details-modal').style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        document.getElementById('order-details-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            if (realtimeSubscription) {
+                await supabase.removeChannel(realtimeSubscription);
             }
         });
-        
-        // Listen for new orders from customer site
-        function checkForNewOrders() {
-            // In a real app, you would check with a server
-            // For now, we'll just reload orders periodically
-            loadOrders(document.getElementById('status-filter').value);
-        }
-        
-        // Check for new orders every 30 seconds
-        setInterval(checkForNewOrders, 30000);
-        
-        // Play sound for new orders (optional)
-        function playNotificationSound() {
-            const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ...');
-            audio.play().catch(e => console.log('Audio play failed:', e));
-        }
     </script>
 </body>
-
 </html>
+[file content end]
