@@ -773,4 +773,56 @@ function setupAddToCartButtons() {
             
             // Open cart
             const cartContainer = document.getElementById('shopping-cart');
-            if (
+            if (cartContainer) {
+                cartContainer.classList.add('open');
+            }
+        }
+    });
+}
+
+function setupOrderForm() {
+    const orderForm = document.getElementById('order-form');
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            confirmOrder();
+        });
+    }
+}
+
+function setupDeliveryToggle() {
+    const deliveryYes = document.getElementById('delivery-yes');
+    const deliveryNo = document.getElementById('delivery-no');
+    const addressGroup = document.getElementById('address-group');
+    
+    if (deliveryYes && deliveryNo && addressGroup) {
+        const updateAddressField = () => {
+            const addressInput = document.getElementById('customer-address');
+            if (deliveryYes.checked) {
+                addressGroup.style.display = 'block';
+                if (addressInput) addressInput.required = true;
+            } else {
+                addressGroup.style.display = 'none';
+                if (addressInput) addressInput.required = false;
+            }
+            updateCartUI();
+        };
+        
+        deliveryYes.addEventListener('change', updateAddressField);
+        deliveryNo.addEventListener('change', updateAddressField);
+        updateAddressField();
+    }
+}
+
+// ==================== EXPORT FUNCTIONS FOR ADMIN ====================
+window.ydOrderSystem = {
+    addToCart,
+    removeFromCart,
+    updateCartQuantity,
+    clearCart,
+    getCartTotal,
+    getCartCount,
+    confirmOrder,
+    updateCartUI
+};
+[file content end]
