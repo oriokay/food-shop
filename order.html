@@ -80,7 +80,7 @@
                         <input type="text" id="customer-address" class="form-control" placeholder="Entrez votre adresse complète">
                     </div>
                     
-                    <h2 id="order-items-title">Votre Commande <span id="edit-cart-btn" class="edit-cart-btn">?? Modifier</span></h2>
+                    <h2 id="order-items-title">Votre Commande <span id="edit-cart-btn" class="edit-cart-btn">✏️ Modifier</span></h2>
                     
                     <!-- Order Items loaded from cart with edit controls -->
                     <div class="order-summary" id="order-summary">
@@ -170,7 +170,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
     <script>
         // Order page specific functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -389,10 +388,10 @@
                     
                     // Change button text
                     if (this.textContent.includes('Modifier')) {
-                        this.textContent = '? Terminer';
+                        this.textContent = '✓ Terminer';
                         this.classList.add('editing');
                     } else {
-                        this.textContent = '?? Modifier';
+                        this.textContent = '✏️ Modifier';
                         this.classList.remove('editing');
                     }
                 });
@@ -441,6 +440,19 @@
                         return;
                     }
                     
+                    // Calculate total
+                    let total = 0;
+                    cart.forEach(item => {
+                        total += item.price * item.quantity;
+                    });
+                    
+                    if (deliveryType === 'yes') {
+                        total += 150; // Delivery cost
+                    }
+                    
+                    // Generate order ID
+                    const orderId = 'ORD-' + Date.now().toString().slice(-6);
+                    
                     // Prepare order summary for display
                     let orderSummary = `Nouvelle commande de ${customerName}:\n\n`;
                     cart.forEach(item => {
@@ -452,8 +464,7 @@
                         orderSummary += `Adresse: ${customerAddress}\n`;
                     }
                     
-                    const total = document.getElementById('order-total').textContent;
-                    orderSummary += `\nTotal: ${total}\n`;
+                    orderSummary += `\nTotal: ${total} DA\n`;
                     orderSummary += `Téléphone: ${customerPhone}\n`;
                     
                     if (specialNotes) {
@@ -464,19 +475,37 @@
                     const confirmOrder = confirm(`Résumé de votre commande:\n\n${orderSummary}\n\nConfirmez-vous cette commande?`);
                     
                     if (confirmOrder) {
-                        // In a real application, you would send this to a server
-                        alert(`Commande confirmée!\n\n${orderSummary}\n\nMerci pour votre commande! Nous vous contacterons bientôt pour confirmation.`);
+                        // Create order object
+                        const order = {
+                            id: orderId,
+                            customerName: customerName,
+                            phone: customerPhone,
+                            deliveryType: deliveryType === 'yes' ? 'delivery' : 'pickup',
+                            address: customerAddress,
+                            items: [...cart], // Copy cart items
+                            notes: specialNotes,
+                            total: total,
+                            status: 'new',
+                            date: new Date().toISOString(),
+                            timestamp: Date.now()
+                        };
                         
-                        // Clear the cart from localStorage
+                        // Save order to admin system
+                        saveOrderToAdmin(order);
+                        
+                        // Show success message
+                        alert(`Commande confirmée!\n\nID de votre commande: ${orderId}\n\nMerci pour votre commande! Nous vous contacterons bientôt pour confirmation.`);
+                        
+                        // Clear the cart
                         localStorage.removeItem('ydCart');
-                        
-                        // Reset form
-                        orderForm.reset();
                         
                         // Update global cart display if available
                         if (window.updateCartDisplay) {
                             window.updateCartDisplay();
                         }
+                        
+                        // Reset form
+                        orderForm.reset();
                         
                         // Redirect to home page
                         setTimeout(() => {
@@ -485,6 +514,85 @@
                     }
                 });
             }
+        }
+        
+        // Save order to admin system
+        function saveOrderToAdmin(order) {
+            try {
+                // Get existing orders
+                let orders = [];
+                const storedOrders = localStorage.getItem('ydOrders');
+                
+                if (storedOrders) {
+                    orders = JSON.parse(storedOrders);
+                }
+                
+                // Add new order
+                orders.push(order);
+                
+                // Save to localStorage
+                localStorage.setItem('ydOrders', JSON.stringify(orders));
+                
+                console.log('Order saved to admin system:', order.id);
+                console.log('Total orders now:', orders.length);
+                
+                // Save notification for admin
+                const notifications = JSON.parse(localStorage.getItem('ydNotifications')) || [];
+                notifications.push({
+                    type: 'new_order',
+                    orderId: order.id,
+                    customerName: order.customerName,
+                    total: order.total,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                localStorage.setItem('ydNotifications', JSON.stringify(notifications));
+                
+                // Play notification sound if admin is logged in
+                if (localStorage.getItem('ydAdminLoggedIn') === 'true') {
+                    playNotificationSound();
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving order to admin:', error);
+                return false;
+            }
+        }
+        
+        // Play notification sound for admin
+        function playNotificationSound() {
+            try {
+                // Create a simple beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio notification failed:', e);
+            }
+        }
+        
+        // Function to check if admin dashboard should be notified
+        function notifyAdminDashboard() {
+            // This would ideally use WebSockets or server push
+            // For now, we'll just update localStorage
+            const lastOrderTime = localStorage.getItem('ydLastOrderTime') || 0;
+            localStorage.setItem('ydLastOrderTime', Date.now());
+            
+            // Add a flag for new orders
+            localStorage.setItem('ydHasNewOrders', 'true');
         }
     </script>
 </body>
