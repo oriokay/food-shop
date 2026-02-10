@@ -5,8 +5,8 @@
 
 // ==================== SUPABASE CONFIGURATION ====================
 // Replace these with your actual Supabase project credentials
-const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
-const SUPABASE_ANON_KEY = 'your-public-anon-key'; // Replace with your Supabase anon key
+const SUPABASE_URL = 'https://frsygwxoxigzslprgosd.supabase.co'; // Replace with your Supabase URL
+const SUPABASE_ANON_KEY = 'sb_publishable_h7ceqZWiwuTwJykoJYigrg_A7kG3LS2'; // Replace with your Supabase anon key
 
 // Initialize Supabase client
 let supabase;
@@ -826,3 +826,4 @@ window.ydOrderSystem = {
     updateCartUI
 };
 [file content end]
+
