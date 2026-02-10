@@ -1,6 +1,9 @@
 // Main JavaScript for YD Healthy Food Jijel
 
 // Language data
+const supabaseUrl = "YOUR_URL";
+const supabaseKey = "YOUR_PUBLIC_KEY";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 const translations = {
     fr: {
         // Navigation
@@ -848,4 +851,5 @@ if (typeof window !== 'undefined') {
         clearCart,
         updateCartDisplay
     };
+
 }
