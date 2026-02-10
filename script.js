@@ -500,7 +500,29 @@ function addToCart(itemId, itemName, itemPrice) {
     }
     
     // Save cart to localStorage
-    localStorage.setItem('ydCart', JSON.stringify(cart));
+    submitOrderToAdmin(orderData)
+    async function submitOrderToDatabase(orderData) {
+    const { data, error } = await supabase
+        .from('orders')
+        .insert([{
+            customer_name: orderData.customerName,
+            phone: orderData.phone,
+            address: orderData.address,
+            delivery: orderData.delivery,
+            items: orderData.items,
+            total: orderData.total,
+            status: 'new'
+        }]);
+
+    if (error) {
+        console.error("Error:", error);
+        alert("Error sending order");
+        return null;
+    }
+
+    return data;
+}
+
     
     // Update cart display
     updateCartDisplay();
@@ -853,3 +875,4 @@ if (typeof window !== 'undefined') {
     };
 
 }
+
