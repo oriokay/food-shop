@@ -6,6 +6,7 @@
     <title>YD Healthy Food Jijel - Accueil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Header -->
@@ -151,6 +152,10 @@
 
     <script src="script.js"></script>
     <script>
+
+        const supabaseUrl = "https://frsygwxoxigzslprgosd.supabase.co";
+        const supabaseKey = "sb_publishable_h7ceqZWiwuTwJykoJYigrg_A7kG3LS2";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         // Initialize home page
         document.addEventListener('DOMContentLoaded', function() {
             // Set active nav link
@@ -164,4 +169,5 @@
         });
     </script>
 </body>
+
 </html>
