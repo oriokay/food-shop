@@ -538,6 +538,17 @@
     </div>
     
     <script>
+        supabase
+  .channel('orders')
+  .on('postgres_changes', 
+      { event: '*', schema: 'public', table: 'orders' }, 
+      payload => {
+          console.log('Change received!', payload);
+          loadOrdersFromDatabase();
+      }
+  )
+  .subscribe();
+
         // Check if user is logged in
         if (localStorage.getItem('ydAdminLoggedIn') !== 'true') {
             window.location.href = 'admin.html';
@@ -973,4 +984,5 @@
         }
     </script>
 </body>
+
 </html>
