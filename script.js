@@ -1,5 +1,34 @@
 // Main JavaScript for YD Healthy Food Jijel
 
+const supabaseUrl = "https://frsygwxoxigzslprgosd.supabase.co";
+const supabaseKey = "sb_publishable_h7ceqZWiwuTwJykoJYigrg_A7kG3LS2";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+submitOrderToAdmin(orderData)
+
+async function submitOrderToDatabase(orderData) {
+    const { data, error } = await supabase
+        .from('orders')
+        .insert([{
+            customer_name: orderData.customerName,
+            phone: orderData.phone,
+            address: orderData.address,
+            delivery: orderData.delivery,
+            items: orderData.items,
+            total: orderData.total,
+            status: 'new'
+        }]);
+
+    if (error) {
+        console.error("Error:", error);
+        alert("Error sending order");
+        return null;
+    }
+
+    return data;
+}
+
+
 // Language data
 const translations = {
     fr: {
@@ -848,4 +877,5 @@ if (typeof window !== 'undefined') {
         clearCart,
         updateCartDisplay
     };
+
 }
