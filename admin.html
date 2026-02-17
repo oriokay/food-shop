@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - YD Healthy Food Jijel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-login {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+        }
+        
+        .admin-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .admin-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .admin-form .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .admin-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .admin-submit:hover {
+            background: #219653;
+        }
+        
+        .login-note {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .back-to-site {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-to-site:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-utensils" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                <h1>YD Healthy Food Admin</h1>
+                <p>Accès réservé au personnel</p>
+            </div>
+            
+            <form class="admin-form" id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-username">Nom d'utilisateur</label>
+                    <input type="text" id="admin-username" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Mot de passe</label>
+                    <input type="password" id="admin-password" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="admin-submit">Se Connecter</button>
+                
+                <p class="login-note">
+                    <i class="fas fa-info-circle"></i>
+                    Identifiants par défaut: admin / admin123
+                </p>
+                
+                <a href="index.html" class="back-to-site">
+                    <i class="fas fa-arrow-left"></i> Retour au site public
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simple admin login system
+        document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            // Simple hardcoded credentials (in real app, use proper authentication)
+            if ((username === 'admin' && password === 'admin123') || 
+                (username === 'staff' && password === 'staff123')) {
+                
+                // Save login state
+                localStorage.setItem('ydAdminLoggedIn', 'true');
+                localStorage.setItem('ydAdminUser', username);
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Identifiants incorrects. Essayez admin/admin123 ou staff/staff123');
+            }
+        });
+        
+        // Check if already logged in
+        if (localStorage.getItem('ydAdminLoggedIn') === 'true') {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
