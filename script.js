@@ -1,8 +1,8 @@
 // Main JavaScript for YD Healthy Food Jijel
 
 // Supabase configuration
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://frsygwxoxigzslprgosd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_h7ceqZWiwuTwJykoJYigrg_A7kG3LS2';
 let supabase;
 
 // Initialize Supabase client
@@ -1147,3 +1147,4 @@ if (typeof window !== 'undefined') {
         getOrderStatsFromSupabase
     };
 }
+
