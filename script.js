@@ -1,5 +1,23 @@
 // Main JavaScript for YD Healthy Food Jijel
 
+// Supabase configuration
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+let supabase;
+
+// Initialize Supabase client
+function initSupabase() {
+    if (typeof supabase !== 'undefined') {
+        return supabase;
+    }
+    
+    // Create supabase client if not exists
+    if (typeof window.supabase === 'undefined') {
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    return window.supabase;
+}
+
 // Language data
 const translations = {
     fr: {
@@ -118,180 +136,284 @@ const translations = {
     },
     ar: {
         // Navigation
-        "nav-home": "????????",
-        "nav-menu": "????? ??????",
-        "nav-order": "????",
-        "nav-contact": "???? ???",
+        "nav-home": "الرئيسية",
+        "nav-menu": "قائمة الطعام",
+        "nav-order": "طلب",
+        "nav-contact": "اتصل بنا",
         
         // Site title
-        "site-title": "??? ?? Healthy Food ????",
+        "site-title": "YD Healthy Food جيجل",
         
         // Home Page
-        "hero-title": "???? ??? ??????? ?? ????",
-        "hero-text": "???? ?????? ?????? ??????? ??? ???????? ???????? ?? ????? ?? ????. ????? ???? ?? ???? ????? ????? ????.",
-        "hero-order-btn": "???? ????",
+        "hero-title": "طعام صحي ومتوازن في جيجل",
+        "hero-text": "اطلب أطباقك الصحية المفضلة أونلاين واستلمها في منزلك أو في العمل. توصيل سريع في جميع أنحاء مدينة جيجل.",
+        "hero-order-btn": "اطلب الآن",
         
-        "about-title": "?? YD Healthy Food",
-        "about-text-1": "??? ?????? ??????? ????? ?????????. ?????? ?? ????? ????? ????? ?????? ???????? ?? ????.",
-        "about-text-2": "??? ????? ???? ??????? ??????? ????? ?????? ??????? ??? ???? ????? ?? ?????? ????????.",
+        "about-title": "عن YD Healthy Food",
+        "about-text-1": "نحن شغوفون بالطعام الصحي والمتوازن. مهمتنا هي توفير وجبات لذيذة ومغذية لعملائنا في جيجل.",
+        "about-text-2": "جميع أطباقنا محضرة بمكونات طازجة وعالية الجودة بدون مواد حافظة أو إضافات صناعية.",
         
-        "feature-1-title": "?????? ?????",
-        "feature-1-text": "??????? ???? ??????? ????? ??????",
-        "feature-2-title": "????? ????",
-        "feature-2-text": "????? ??? ?????? ?? ??? ?? 45 ?????",
-        "feature-3-title": "?????? ????",
-        "feature-3-text": "????? ??????? ?? ??????? ??????",
+        "feature-1-title": "مكونات طازجة",
+        "feature-1-text": "استخدام يومي لمكونات طازجة ومحلية",
+        "feature-2-title": "توصيل سريع",
+        "feature-2-text": "توصيل للمنزل في أقل من 45 دقيقة",
+        "feature-3-title": "خيارات صحية",
+        "feature-3-text": "أطباق متوازنة مع معلومات غذائية",
         
-        "popular-title": "??????? ???????",
-        "view-menu-btn": "??? ??????? ???????",
+        "popular-title": "أطباقنا الشعبية",
+        "view-menu-btn": "عرض القائمة الكاملة",
         
         // Menu Page
-        "menu-page-title": "??????? ???????",
-        "menu-page-subtitle": "????? ???? ???????? ?????? ???????",
-        "boxes-title": "?????",
-        "drinks-title": "?????????",
-        "supplements-title": "????????",
-        "ready-to-order-title": "????? ??????",
-        "ready-to-order-text": "???? ??? ???????? ?????? ????? ????? ?????!",
-        "order-now-btn": "???? ????",
+        "menu-page-title": "قائمتنا الكاملة",
+        "menu-page-subtitle": "اكتشف جميع خياراتنا الصحية واللذيذة",
+        "boxes-title": "بوكسات",
+        "drinks-title": "المشروبات",
+        "supplements-title": "الإضافات",
+        "ready-to-order-title": "مستعد للطلب؟",
+        "ready-to-order-text": "قم بطلبك أونلاين واستلم طعامك الصحي بسرعة!",
+        "order-now-btn": "اطلب الآن",
         
         // Order Page
-        "order-page-title": "???? ????",
-        "order-page-subtitle": "???? ??????? ????? ???? ?????? ???????",
-        "customer-info-title": "??????? ??????",
-        "name-label": "????? ?????? *",
-        "phone-label": "??? ?????? *",
-        "delivery-label": "??? ?????",
-        "delivery-yes-label": "????? (150 ?? - ???? ???)",
-        "delivery-no-label": "?????? ?? ?????",
-        "address-label": "????? ??????? *",
-        "order-items-title": "????",
-        "empty-order-text": "??? ?????? ?????. ??? ????? ?? ???????.",
-        "total-text": "???????:",
-        "notes-label": "??????? ???? (???????)",
-        "submit-order": "????? ?????",
-        "order-note": "????? ?? ?????? ???? ?? ???? 15 ?????.",
+        "order-page-title": "تقديم طلب",
+        "order-page-subtitle": "املأ النموذج أدناه لطلب أطباقك المفضلة",
+        "customer-info-title": "معلومات العميل",
+        "name-label": "الاسم الكامل *",
+        "phone-label": "رقم الهاتف *",
+        "delivery-label": "نوع الطلب",
+        "delivery-yes-label": "توصيل (150 دج - جيجل فقط)",
+        "delivery-no-label": "استلام من المتجر",
+        "address-label": "عنوان التوصيل *",
+        "order-items-title": "طلبك",
+        "empty-order-text": "سلة التسوق فارغة. أضف عناصر من القائمة.",
+        "total-text": "المجموع:",
+        "notes-label": "ملاحظات خاصة (اختياري)",
+        "submit-order": "تأكيد الطلب",
+        "order-note": "سنتصل بك لتأكيد طلبك خلال 15 دقيقة.",
         
-        "need-help-title": "????? ???????",
-        "call-us-title": "???? ???",
+        "need-help-title": "بحاجة لمساعدة؟",
+        "call-us-title": "اتصل بنا",
         "call-us-text": "0542299391",
-        "hours-title": "????? ?????",
-        "hours-text": "??????? - ?????: 10:00 - 22:00",
-        "delivery-info-title": "??????? ???????",
-        "delivery-info-text": "???????: 150 ?? (???? ???)",
-        "delivery-time-text": "??? ???????: 30-45 ?????",
+        "hours-title": "ساعات العمل",
+        "hours-text": "الاثنين - الأحد: 10:00 - 22:00",
+        "delivery-info-title": "معلومات التوصيل",
+        "delivery-info-text": "التوصيل: 150 دج (جيجل فقط)",
+        "delivery-time-text": "وقت التوصيل: 30-45 دقيقة",
         
         // Contact Page
-        "contact-page-title": "???? ???",
-        "contact-page-subtitle": "??? ??? ??????? ??? ??????",
-        "get-in-touch-title": "????? ????",
-        "get-in-touch-text": "????? ?? ???? ???. ?? ????? ?? ??????? ??? ??? ???? ?? ??? ?? ???????.",
-        "phone-title": "??????",
+        "contact-page-title": "اتصل بنا",
+        "contact-page-subtitle": "نحن هنا للإجابة على أسئلتك",
+        "get-in-touch-title": "تواصل معنا",
+        "get-in-touch-text": "يسعدنا سماع رأيك. لا تتردد في الاتصال بنا لأي سؤال أو طلب أو تعليق.",
+        "phone-title": "الهاتف",
         "phone-number": "0542299391",
-        "phone-hours": "??????? - ?????: 10:00 - 22:00",
-        "location-title": "???????",
-        "location-text": "????? ???????",
-        "delivery-area": "????? ???????: ???? ???",
-        "delivery-title": "???????",
-        "delivery-cost": "???????: 150 ??",
-        "delivery-time": "?????: 30-45 ?????",
-        "follow-us-title": "?????? ??? ????? ??????? ?????????",
+        "phone-hours": "الاثنين - الأحد: 10:00 - 22:00",
+        "location-title": "العنوان",
+        "location-text": "جيجل، الجزائر",
+        "delivery-area": "منطقة التوصيل: جيجل فقط",
+        "delivery-title": "التوصيل",
+        "delivery-cost": "التكلفة: 150 دج",
+        "delivery-time": "الوقت: 30-45 دقيقة",
+        "follow-us-title": "تابعنا على وسائل التواصل الاجتماعي",
         
-        "send-message-title": "???? ??? ?????",
-        "contact-name-label": "????? ?????? *",
-        "contact-phone-label": "??? ?????? *",
-        "contact-email-label": "?????? ?????????? (???????)",
-        "contact-subject-label": "??????? *",
-        "contact-message-label": "??????? *",
-        "submit-contact": "????? ???????",
+        "send-message-title": "أرسل لنا رسالة",
+        "contact-name-label": "الاسم الكامل *",
+        "contact-phone-label": "رقم الهاتف *",
+        "contact-email-label": "البريد الإلكتروني (اختياري)",
+        "contact-subject-label": "الموضوع *",
+        "contact-message-label": "الرسالة *",
+        "submit-contact": "إرسال الرسالة",
         
-        "faq-title": "??????? ???????",
-        "faq1-question": "?? ?? ????? ??????? ?????? ???",
-        "faq1-answer": "??? ????? ??? ???? ????? ????. ????? ??????? 150 ??.",
-        "faq2-question": "?? ?? ????? ????? ?????? ???",
-        "faq2-answer": "??? ???? ?? ??????? ??? ?????? ?? ?????? 10:00 ??? 22:00.",
-        "faq3-question": "?? ?????? ????? ???? ??? ???????",
-        "faq3-answer": "????? ????? ???? ???? 10 ????? ?? ?????? ?? ???? ??????? ??? ??? 0542299391.",
-        "faq4-question": "?? ?????? ????? ??? ?????????",
-        "faq4-answer": "??????? ???? ????? ????? ??? ??? ??????? ?? ??? ???????? ?? ?????.",
+        "faq-title": "الأسئلة الشائعة",
+        "faq1-question": "ما هي منطقة التوصيل لديكم؟",
+        "faq1-answer": "نقوم بالتوصيل فقط في مدينة جيجل. تكلفة التوصيل 150 دج.",
+        "faq2-question": "ما هي ساعات العمل لديكم؟",
+        "faq2-answer": "نحن مفتوحون من الاثنين إلى الأحد من الساعة 10:00 صباحًا حتى 10:00 مساءً.",
+        "faq3-question": "هل يمكنني تعديل طلبي بعد تقديمه؟",
+        "faq3-answer": "يمكنك تعديل طلبك في غضون 10 دقائق من التقديم عن طريق الاتصال بنا على 0542299391.",
+        "faq4-question": "هل تقبلون الدفع عبر الإنترنت؟",
+        "faq4-answer": "حالياً نقبل الدفع نقداً عند التوصيل أو الاستلام من المتجر.",
         
         // Footer
-        "footer-slogan": "???? ???? ???? ???????",
-        "quick-links-title": "????? ?????",
-        "contact-info-title": "??????? ???????",
-        "footer-text": "© 2023 YD Healthy Food Jijel. ???? ?????? ??????.",
+        "footer-slogan": "طعام صحي حياة متوازنة",
+        "quick-links-title": "روابط سريعة",
+        "contact-info-title": "معلومات الاتصال",
+        "footer-text": "© 2023 YD Healthy Food Jijel. جميع الحقوق محفوظة.",
         
         // Shopping Cart
-        "cart-title": "??? ??????",
-        "cart-empty": "??? ?????? ?????",
-        "cart-total": "???????:",
-        "view-cart": "??? ?????",
-        "checkout": "?????",
-        "remove": "???",
-        "add-to-cart": "??? ??? ?????"
+        "cart-title": "سلة التسوق",
+        "cart-empty": "سلة التسوق فارغة",
+        "cart-total": "المجموع:",
+        "view-cart": "عرض السلة",
+        "checkout": "إتمام الطلب",
+        "remove": "إزالة",
+        "add-to-cart": "أضف إلى السلة"
     }
 };
 
-// Menu items data
+// Menu items data (keep for fallback, but we'll fetch from Supabase)
 const menuItemsData = [
     // Boxes
-    { id: 1, category: 'boxes', name: { fr: "Riz escalop salad oeuf", ar: "??? ??????? ???? ???" }, description: { fr: "Riz avec escalope, salade et œuf", ar: "??? ?? ???????? ???? ????" }, calories: 720, price: 350 },
-    { id: 2, category: 'boxes', name: { fr: "Pasta escalop salad", ar: "????? ??????? ????" }, description: { fr: "Pâtes avec escalope et salade", ar: "??????? ?? ??????? ?????" }, calories: 750, price: 400 },
-    { id: 3, category: 'boxes', name: { fr: "Soup citrouille avec un toast", ar: "????? ??? ?? ????" }, description: { fr: "Soupe de citrouille servie avec un toast", ar: "????? ??? ???? ?? ????" }, calories: 500, price: 450 },
-    { id: 4, category: 'boxes', name: { fr: "Bourgouil au poulet", ar: "???????? ???????" }, description: { fr: "Boulgour au poulet", ar: "???? ???????" }, calories: 640, price: 450 },
-    { id: 5, category: 'boxes', name: { fr: "Salad Cesar", ar: "???? ????" }, description: { fr: "Salade César classique", ar: "???? ???? ????????" }, calories: 550, price: 300 },
-    { id: 6, category: 'boxes', name: { fr: "Salad thon oeuf", ar: "???? ???? ???" }, description: { fr: "Salade de thon avec œuf", ar: "???? ???? ?? ???" }, calories: 580, price: 400 },
+    { id: 1, category: 'boxes', name: { fr: "Riz escalop salad oeuf", ar: "أرز إسكالوب سلطة بيض" }, description: { fr: "Riz avec escalope, salade et œuf", ar: "أرز مع إسكالوب وسلطة وبيض" }, calories: 720, price: 350 },
+    { id: 2, category: 'boxes', name: { fr: "Pasta escalop salad", ar: "باستا إسكالوب سلطة" }, description: { fr: "Pâtes avec escalope et salade", ar: "معكرونة مع إسكالوب وسلطة" }, calories: 750, price: 400 },
+    { id: 3, category: 'boxes', name: { fr: "Soup citrouille avec un toast", ar: "شوربة قرع مع توست" }, description: { fr: "Soupe de citrouille servie avec un toast", ar: "شوربة قرع تقدم مع توست" }, calories: 500, price: 450 },
+    { id: 4, category: 'boxes', name: { fr: "Bourgouil au poulet", ar: "برغل بالدجاج" }, description: { fr: "Boulgour au poulet", ar: "برغل بالدجاج" }, calories: 640, price: 450 },
+    { id: 5, category: 'boxes', name: { fr: "Salad Cesar", ar: "سلطة سيزر" }, description: { fr: "Salade César classique", ar: "سلطة سيزر كلاسيكية" }, calories: 550, price: 300 },
+    { id: 6, category: 'boxes', name: { fr: "Salad thon oeuf", ar: "سلطة تونة بيض" }, description: { fr: "Salade de thon avec œuf", ar: "سلطة تونة مع بيض" }, calories: 580, price: 400 },
     
     // Drinks
-    { id: 7, category: 'drinks', name: { fr: "Jus banan date", ar: "???? ??? ???" }, description: { fr: "Jus naturel de banane et datte", ar: "???? ????? ?? ????? ??????" }, calories: null, price: 300 },
-    { id: 8, category: 'drinks', name: { fr: "Vishy", ar: "????" }, description: { fr: "Eau minérale Vishy", ar: "???? ?????? ????" }, calories: null, price: 70 },
-    { id: 9, category: 'drinks', name: { fr: "Bouteille d'eau", ar: "?????? ???" }, description: { fr: "Bouteille d'eau minérale", ar: "?????? ??? ?????" }, calories: null, price: 40 },
+    { id: 7, category: 'drinks', name: { fr: "Jus banan date", ar: "عصير موز تمر" }, description: { fr: "Jus naturel de banane et datte", ar: "عصير طبيعي من الموز والتمر" }, calories: null, price: 300 },
+    { id: 8, category: 'drinks', name: { fr: "Vishy", ar: "فيشي" }, description: { fr: "Eau minérale Vishy", ar: "مياه معدنية فيشي" }, calories: null, price: 70 },
+    { id: 9, category: 'drinks', name: { fr: "Bouteille d'eau", ar: "قنينة ماء" }, description: { fr: "Bouteille d'eau minérale", ar: "قنينة ماء معدني" }, calories: null, price: 40 },
     
     // Supplements
-    { id: 10, category: 'supplements', name: { fr: "Œuf supplémentaire", ar: "???? ??????" }, description: { fr: "Ajouter un œuf supplémentaire", ar: "????? ???? ??????" }, calories: null, price: 50 },
-    { id: 11, category: 'supplements', name: { fr: "Escalop supplémentaire", ar: "??????? ?????" }, description: { fr: "Ajouter une escalope supplémentaire", ar: "????? ??????? ?????" }, calories: null, price: 50 }
+    { id: 10, category: 'supplements', name: { fr: "Œuf supplémentaire", ar: "بيض إضافي" }, description: { fr: "Ajouter un œuf supplémentaire", ar: "إضافة بيضة إضافية" }, calories: null, price: 50 },
+    { id: 11, category: 'supplements', name: { fr: "Escalop supplémentaire", ar: "إسكالوب إضافي" }, description: { fr: "Ajouter une escalope supplémentaire", ar: "إضافة إسكالوب إضافي" }, calories: null, price: 50 }
 ];
 
 // Global variables
 let currentLang = 'fr';
-let cart = JSON.parse(localStorage.getItem('ydCart')) || [];
+let cart = [];
 
 // DOM elements
 let langFrBtn, langArBtn;
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize language switcher if it exists on the page
-    langFrBtn = document.getElementById('lang-fr');
-    langArBtn = document.getElementById('lang-ar');
-    
-    if (langFrBtn && langArBtn) {
-        // Set up language switcher
-        langFrBtn.addEventListener('click', () => switchLanguage('fr'));
-        langArBtn.addEventListener('click', () => switchLanguage('ar'));
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // Initialize Supabase
+        supabase = initSupabase();
         
-        // Check for saved language preference
-        const savedLang = localStorage.getItem('ydLanguage');
-        if (savedLang) {
-            switchLanguage(savedLang);
+        // Load cart from localStorage (keep for cart persistence)
+        const savedCart = localStorage.getItem('ydCart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
         }
+        
+        // Initialize language switcher if it exists on the page
+        langFrBtn = document.getElementById('lang-fr');
+        langArBtn = document.getElementById('lang-ar');
+        
+        if (langFrBtn && langArBtn) {
+            // Set up language switcher
+            langFrBtn.addEventListener('click', () => switchLanguage('fr'));
+            langArBtn.addEventListener('click', () => switchLanguage('ar'));
+            
+            // Check for saved language preference
+            const savedLang = localStorage.getItem('ydLanguage');
+            if (savedLang) {
+                switchLanguage(savedLang);
+            }
+        }
+        
+        // Create shopping cart elements if not on admin pages
+        if (!window.location.pathname.includes('admin.html') && 
+            !window.location.pathname.includes('dashboard.html')) {
+            createShoppingCart();
+        }
+        
+        // Update cart display
+        updateCartDisplay();
+        
+        // Set up "Add to cart" buttons
+        setupAddToCartButtons();
+        
+        // Setup floating cart button
+        setupFloatingCartButton();
+        
+        // Load menu items from Supabase if on menu page
+        if (window.location.pathname.includes('menu.html')) {
+            await loadMenuItemsFromSupabase();
+        }
+        
+        // Load orders if on dashboard page
+        if (window.location.pathname.includes('dashboard.html')) {
+            await loadDashboardOrders();
+        }
+        
+        // Set up real-time subscriptions if on dashboard
+        if (window.location.pathname.includes('dashboard.html')) {
+            setupRealtimeSubscriptions();
+        }
+        
+    } catch (error) {
+        console.error('Error initializing app:', error);
+        showNotification('Erreur de connexion à la base de données', 'error');
     }
-    
-    // Create shopping cart elements if not on admin pages
-    if (!window.location.pathname.includes('admin.html') && 
-        !window.location.pathname.includes('dashboard.html')) {
-        createShoppingCart();
-    }
-    
-    // Update cart display
-    updateCartDisplay();
-    
-    // Set up "Add to cart" buttons
-    setupAddToCartButtons();
-    
-    // Setup floating cart button
-    setupFloatingCartButton();
 });
+
+// Load menu items from Supabase
+async function loadMenuItemsFromSupabase() {
+    try {
+        const { data, error } = await supabase
+            .from('menu_items')
+            .select('*')
+            .order('category')
+            .order('id');
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+            // Update menu display with data from Supabase
+            updateMenuDisplay(data);
+        } else {
+            // Fallback to local data if no data in Supabase
+            console.log('No menu items in Supabase, using local data');
+            updateMenuDisplay(menuItemsData);
+        }
+    } catch (error) {
+        console.error('Error loading menu items:', error);
+        // Fallback to local data
+        updateMenuDisplay(menuItemsData);
+        showNotification('Erreur de chargement du menu', 'error');
+    }
+}
+
+// Update menu display with data
+function updateMenuDisplay(items) {
+    // Group items by category
+    const boxesContainer = document.querySelector('.boxes-container');
+    const drinksContainer = document.querySelector('.drinks-container');
+    const supplementsContainer = document.querySelector('.supplements-container');
+    
+    if (boxesContainer) {
+        boxesContainer.innerHTML = '';
+        items.filter(item => item.category === 'boxes').forEach(item => {
+            boxesContainer.appendChild(createMenuItemElement(item));
+        });
+    }
+    
+    if (drinksContainer) {
+        drinksContainer.innerHTML = '';
+        items.filter(item => item.category === 'drinks').forEach(item => {
+            drinksContainer.appendChild(createMenuItemElement(item));
+        });
+    }
+    
+    if (supplementsContainer) {
+        supplementsContainer.innerHTML = '';
+        items.filter(item => item.category === 'supplements').forEach(item => {
+            supplementsContainer.appendChild(createMenuItemElement(item));
+        });
+    }
+}
+
+// Create menu item element
+function createMenuItemElement(item) {
+    const div = document.createElement('div');
+    div.className = 'menu-item';
+    div.innerHTML = `
+        <div class="menu-item-content">
+            <div class="item-header">
+                <h3 class="item-name">${item.name[currentLang]}</h3>
+                <span class="item-price">${item.price} DA</span>
+            </div>
+            <p class="item-description">${item.description[currentLang]}</p>
+            ${item.calories ? `<span class="item-calories">${item.calories} cal</span>` : ''}
+            <button class="add-to-cart-btn" data-id="${item.id}">${translations[currentLang]['add-to-cart']}</button>
+        </div>
+    `;
+    return div;
+}
 
 // Switch language
 function switchLanguage(lang) {
@@ -335,9 +457,7 @@ function switchLanguage(lang) {
     });
     
     // Update menu items if on menu page
-    if (window.location.pathname.includes('menu.html')) {
-        updateMenuItemsLanguage();
-    }
+    updateMenuItemsLanguage();
     
     // Update cart display
     updateCartDisplay();
@@ -455,19 +575,7 @@ function setupAddToCartButtons() {
             const menuItem = e.target.closest('.menu-item');
             const itemName = menuItem.querySelector('.item-name').textContent;
             const itemPrice = parseInt(menuItem.querySelector('.item-price').textContent.replace(' DA', ''));
-            
-            // Find the item in our data to get the ID
-            const menuItemData = menuItemsData.find(item => 
-                item.name.fr === itemName || item.name.ar === itemName
-            );
-            
-            let itemId;
-            if (menuItemData) {
-                itemId = menuItemData.id;
-            } else {
-                // Fallback if we can't find the item in data
-                itemId = Date.now();
-            }
+            const itemId = parseInt(e.target.getAttribute('data-id')) || Date.now();
             
             // Add to cart
             addToCart(itemId, itemName, itemPrice);
@@ -496,7 +604,7 @@ function addToCart(itemId, itemName, itemPrice) {
         });
     }
     
-    // Save cart to localStorage
+    // Save cart to localStorage (keep for cart persistence)
     localStorage.setItem('ydCart', JSON.stringify(cart));
     
     // Update cart display
@@ -628,7 +736,7 @@ function updateCartDisplay() {
 }
 
 // Show notification
-function showNotification(message) {
+function showNotification(message, type = 'success') {
     // Remove existing notification
     const existingNotification = document.querySelector('.cart-notification');
     if (existingNotification) {
@@ -643,7 +751,7 @@ function showNotification(message) {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: var(--primary-color);
+        background: ${type === 'success' ? 'var(--primary-color)' : '#f44336'};
         color: white;
         padding: 15px 20px;
         border-radius: 5px;
@@ -704,35 +812,249 @@ function updateMenuItemsLanguage() {
 
 // ========== ADMIN ORDER MANAGEMENT FUNCTIONS ==========
 
-// Submit order to admin system
-function submitOrderToAdmin(orderData) {
-    // Get existing orders
-    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
+// Submit order to Supabase
+async function submitOrderToSupabase(orderData) {
+    try {
+        // Ensure Supabase is initialized
+        if (!supabase) {
+            supabase = initSupabase();
+        }
+        
+        // Generate order ID
+        const orderId = 'ORD-' + Date.now().toString().slice(-6);
+        
+        // Create order object
+        const order = {
+            id: orderId,
+            customer_name: orderData.customerName,
+            customer_phone: orderData.customerPhone,
+            delivery_type: orderData.deliveryType,
+            delivery_address: orderData.deliveryAddress,
+            items: orderData.items,
+            total: orderData.total,
+            notes: orderData.notes || '',
+            status: 'new',
+            created_at: new Date().toISOString()
+        };
+        
+        // Insert into Supabase
+        const { data, error } = await supabase
+            .from('orders')
+            .insert([order])
+            .select();
+        
+        if (error) throw error;
+        
+        console.log('Order submitted successfully:', data);
+        return orderId;
+        
+    } catch (error) {
+        console.error('Error submitting order to Supabase:', error);
+        showNotification('Erreur lors de la soumission de la commande', 'error');
+        throw error;
+    }
+}
+
+// Load orders from Supabase for admin dashboard
+async function loadAdminOrdersFromSupabase(filter = 'all') {
+    try {
+        if (!supabase) {
+            supabase = initSupabase();
+        }
+        
+        let query = supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (filter !== 'all') {
+            query = query.eq('status', filter);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        
+        return data || [];
+        
+    } catch (error) {
+        console.error('Error loading orders from Supabase:', error);
+        showNotification('Erreur de chargement des commandes', 'error');
+        return [];
+    }
+}
+
+// Update order status in Supabase
+async function updateOrderStatusInSupabase(orderId, newStatus) {
+    try {
+        if (!supabase) {
+            supabase = initSupabase();
+        }
+        
+        const { data, error } = await supabase
+            .from('orders')
+            .update({ status: newStatus })
+            .eq('id', orderId)
+            .select();
+        
+        if (error) throw error;
+        
+        console.log('Order status updated successfully:', data);
+        return true;
+        
+    } catch (error) {
+        console.error('Error updating order status in Supabase:', error);
+        showNotification('Erreur de mise à jour du statut', 'error');
+        return false;
+    }
+}
+
+// Delete order from Supabase
+async function deleteOrderFromSupabase(orderId) {
+    try {
+        if (!supabase) {
+            supabase = initSupabase();
+        }
+        
+        const { error } = await supabase
+            .from('orders')
+            .delete()
+            .eq('id', orderId);
+        
+        if (error) throw error;
+        
+        console.log('Order deleted successfully');
+        return true;
+        
+    } catch (error) {
+        console.error('Error deleting order from Supabase:', error);
+        showNotification('Erreur de suppression de la commande', 'error');
+        return false;
+    }
+}
+
+// Get order statistics from Supabase
+async function getOrderStatsFromSupabase() {
+    try {
+        if (!supabase) {
+            supabase = initSupabase();
+        }
+        
+        // Get today's date range
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        // Get all orders
+        const { data: allOrders, error: allError } = await supabase
+            .from('orders')
+            .select('*');
+        
+        if (allError) throw allError;
+        
+        // Get today's orders
+        const { data: todayOrders, error: todayError } = await supabase
+            .from('orders')
+            .select('*')
+            .gte('created_at', today.toISOString())
+            .lt('created_at', tomorrow.toISOString());
+        
+        if (todayError) throw todayError;
+        
+        // Get pending orders (new or preparing)
+        const { data: pendingOrders, error: pendingError } = await supabase
+            .from('orders')
+            .select('*')
+            .in('status', ['new', 'preparing']);
+        
+        if (pendingError) throw pendingError;
+        
+        // Get unique customers
+        const uniqueCustomers = [...new Set(allOrders.map(order => order.customer_phone))];
+        
+        // Calculate today's revenue
+        const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+        
+        return {
+            pendingOrders: pendingOrders.length,
+            todayOrders: todayOrders.length,
+            todayRevenue: todayRevenue,
+            newCustomers: uniqueCustomers.length,
+            totalOrders: allOrders.length
+        };
+        
+    } catch (error) {
+        console.error('Error getting order stats from Supabase:', error);
+        return {
+            pendingOrders: 0,
+            todayOrders: 0,
+            todayRevenue: 0,
+            newCustomers: 0,
+            totalOrders: 0
+        };
+    }
+}
+
+// Load orders for dashboard
+async function loadDashboardOrders() {
+    try {
+        const orders = await loadAdminOrdersFromSupabase();
+        displayDashboardOrders(orders);
+    } catch (error) {
+        console.error('Error loading dashboard orders:', error);
+    }
+}
+
+// Display orders in dashboard
+function displayDashboardOrders(orders) {
+    const ordersContainer = document.getElementById('orders-list');
+    if (!ordersContainer) return;
     
-    // Generate order ID
-    const orderId = 'ORD-' + Date.now().toString().slice(-6);
-    
-    // Create order object
-    const order = {
-        id: orderId,
-        ...orderData,
-        status: 'new',
-        date: new Date().toISOString()
-    };
-    
-    // Add to orders
-    orders.push(order);
-    
-    // Save to localStorage
-    localStorage.setItem('ydOrders', JSON.stringify(orders));
-    
-    // Notify admin if logged in
-    if (localStorage.getItem('ydAdminLoggedIn') === 'true') {
-        console.log('Nouvelle commande reçue:', orderId);
-        // In a real app, you would use WebSockets or push notifications here
+    if (orders.length === 0) {
+        ordersContainer.innerHTML = '<p class="no-orders">Aucune commande trouvée</p>';
+        return;
     }
     
-    return orderId;
+    ordersContainer.innerHTML = orders.map(order => `
+        <div class="order-card ${order.status}" data-order-id="${order.id}">
+            <div class="order-header">
+                <h3>Commande ${order.id}</h3>
+                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+            </div>
+            <div class="order-details">
+                <p><strong>Client:</strong> ${order.customer_name}</p>
+                <p><strong>Téléphone:</strong> ${order.customer_phone}</p>
+                <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                <p><strong>Total:</strong> ${order.total} DA</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Setup real-time subscriptions for dashboard
+function setupRealtimeSubscriptions() {
+    if (!supabase) return;
+    
+    // Subscribe to new orders
+    supabase
+        .channel('orders-channel')
+        .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'orders' },
+            (payload) => {
+                console.log('New order received:', payload);
+                showNotification('Nouvelle commande reçue!', 'success');
+                loadDashboardOrders();
+            }
+        )
+        .on('postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'orders' },
+            (payload) => {
+                console.log('Order updated:', payload);
+                loadDashboardOrders();
+            }
+        )
+        .subscribe();
 }
 
 // Generate order ID for admin system
@@ -764,64 +1086,32 @@ function getStatusClass(status) {
     }
 }
 
-// Load orders for admin dashboard
+// Load orders for admin dashboard (backward compatibility)
 function loadAdminOrders(filter = 'all') {
-    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
-    
-    if (filter === 'all') {
-        return orders;
-    } else {
-        return orders.filter(order => order.status === filter);
-    }
+    // This function is kept for backward compatibility
+    // Use loadAdminOrdersFromSupabase instead
+    return loadAdminOrdersFromSupabase(filter);
 }
 
-// Update order status
+// Update order status (backward compatibility)
 function updateOrderStatus(orderId, newStatus) {
-    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
-    const orderIndex = orders.findIndex(order => order.id === orderId);
-    
-    if (orderIndex !== -1) {
-        orders[orderIndex].status = newStatus;
-        localStorage.setItem('ydOrders', JSON.stringify(orders));
-        return true;
-    }
-    
-    return false;
+    // This function is kept for backward compatibility
+    // Use updateOrderStatusInSupabase instead
+    return updateOrderStatusInSupabase(orderId, newStatus);
 }
 
-// Delete order
+// Delete order (backward compatibility)
 function deleteOrder(orderId) {
-    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
-    const filteredOrders = orders.filter(order => order.id !== orderId);
-    localStorage.setItem('ydOrders', JSON.stringify(filteredOrders));
+    // This function is kept for backward compatibility
+    // Use deleteOrderFromSupabase instead
+    return deleteOrderFromSupabase(orderId);
 }
 
-// Get order statistics
+// Get order statistics (backward compatibility)
 function getOrderStats() {
-    const orders = JSON.parse(localStorage.getItem('ydOrders')) || [];
-    const today = new Date().toDateString();
-    
-    const todayOrders = orders.filter(order => 
-        new Date(order.date).toDateString() === today
-    );
-    
-    const pendingOrders = orders.filter(order => 
-        order.status === 'new' || order.status === 'preparing'
-    ).length;
-    
-    const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
-    
-    // Get unique customers
-    const customers = [...new Set(orders.map(order => order.phone))];
-    const newCustomers = customers.length;
-    
-    return {
-        pendingOrders,
-        todayOrders: todayOrders.length,
-        todayRevenue,
-        newCustomers,
-        totalOrders: orders.length
-    };
+    // This function is kept for backward compatibility
+    // Use getOrderStatsFromSupabase instead
+    return getOrderStatsFromSupabase();
 }
 
 // Clear cart function (for order confirmation)
@@ -837,7 +1127,8 @@ window.updateCartDisplay = updateCartDisplay;
 // Export functions for use in admin pages
 if (typeof window !== 'undefined') {
     window.ydOrderSystem = {
-        submitOrderToAdmin,
+        // Legacy functions (kept for backward compatibility)
+        submitOrderToAdmin: submitOrderToSupabase,
         generateOrderId,
         getStatusText,
         getStatusClass,
@@ -846,6 +1137,13 @@ if (typeof window !== 'undefined') {
         deleteOrder,
         getOrderStats,
         clearCart,
-        updateCartDisplay
+        updateCartDisplay,
+        
+        // New Supabase functions
+        submitOrderToSupabase,
+        loadAdminOrdersFromSupabase,
+        updateOrderStatusInSupabase,
+        deleteOrderFromSupabase,
+        getOrderStatsFromSupabase
     };
 }
