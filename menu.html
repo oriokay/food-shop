@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - YD Healthy Food Jijel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .menu-hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .menu-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.8rem 2rem;
+            border: 2px solid #4CAF50;
+            background: transparent;
+            color: #4CAF50;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .menu-section {
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .menu-card.popular::before {
+            content: "🔥 Populaire";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .menu-card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .menu-card-content {
+            padding: 1.5rem;
+        }
+
+        .menu-card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-card-title h3 {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .menu-card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .menu-card-calories {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .menu-card-calories i {
+            color: #4CAF50;
+            margin-right: 0.3rem;
+        }
+
+        .menu-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-to-cart-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #45a049;
+        }
+
+        .supplement-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        [dir="rtl"] .menu-card.popular::before {
+            right: auto;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button onclick="switchLanguage('fr')" class="lang-btn active">FR</button>
+        <button onclick="switchLanguage('ar')" class="lang-btn">عربي</button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <h1 data-i18n="site-title">YD Healthy Food Jijel</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="nav-home">Accueil</a></li>
+            <li><a href="menu.html" data-i18n="nav-menu">Menu</a></li>
+            <li><a href="order.html" data-i18n="nav-order">Commander</a></li>
+            <li><a href="contact.html" data-i18n="nav-contact">Contact</a></li>
+            <li><a href="dashboard.html" data-i18n="nav-dashboard">Dashboard</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Menu Hero -->
+    <section class="menu-hero">
+        <div>
+            <h1 data-i18n="menu-title">Notre Menu Healthy</h1>
+            <p data-i18n="menu-subtitle">Des plats délicieux et équilibrés préparés avec des ingrédients frais</p>
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <div class="menu-categories">
+        <button class="category-btn active" onclick="filterMenu('all')" data-i18n="all">Tous</button>
+        <button class="category-btn" onclick="filterMenu('box')" data-i18n="boxes">Boxes</button>
+        <button class="category-btn" onclick="filterMenu('supplement')" data-i18n="supplements">Suppléments</button>
+        <button class="category-btn" onclick="filterMenu('drink')" data-i18n="drinks">Boissons</button>
+    </div>
+
+    <!-- Menu Sections -->
+    <div class="menu-section" id="boxes-section">
+        <h2 data-i18n="boxes">Nos Boxes</h2>
+        <div class="menu-grid" id="boxes-grid"></div>
+    </div>
+
+    <div class="menu-section" id="supplements-section">
+        <h2 data-i18n="supplements">Suppléments (+50DA)</h2>
+        <div class="menu-grid" id="supplements-grid"></div>
+    </div>
+
+    <div class="menu-section" id="drinks-section">
+        <h2 data-i18n="drinks">Boissons</h2>
+        <div class="menu-grid" id="drinks-grid"></div>
+    </div>
+
+    <!-- Floating Cart Button -->
+    <div class="floating-cart" onclick="window.location.href='order.html'">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cartCount">0</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMenuItemsDisplay();
+            updateCartCount();
+        });
+
+        async function loadMenuItemsDisplay() {
+            const items = await loadMenuItems();
+            
+            // Boxes
+            const boxes = items.filter(item => item.category === 'box');
+            displayMenuItems('boxes-grid', boxes);
+            
+            // Supplements
+            const supplements = items.filter(item => item.category === 'supplement');
+            displayMenuItems('supplements-grid', supplements);
+            
+            // Drinks
+            const drinks = items.filter(item => item.category === 'drink');
+            displayMenuItems('drinks-grid', drinks);
+        }
+
+        function displayMenuItems(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const isPopular = index < 2; // Mark first 2 items as popular
+                const imageUrl = getImageForItem(item);
+                
+                const card = document.createElement('div');
+                card.className = `menu-card ${isPopular ? 'popular' : ''}`;
+                card.innerHTML = `
+                    <div class="menu-card-image" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${imageUrl}')">
+                    </div>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">
+                            <h3>${currentLanguage === 'fr' ? item.name_fr : item.name_ar}</h3>
+                            <span class="menu-card-price">${item.price} DA</span>
+                        </div>
+                        ${item.calories ? `
+                            <div class="menu-card-calories">
+                                <i class="fas fa-fire"></i> ${item.calories} KCal
+                            </div>
+                        ` : ''}
+                        <div class="menu-card-footer">
+                            <button onclick="addToCartFromMenu(${item.id}, '${currentLanguage === 'fr' ? item.name_fr : item.name_ar}', ${item.price})" class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> ${translations[currentLanguage]['add-to-order']}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function getImageForItem(item) {
+            // You can customize images based on item name
+            const images = {
+                'Riz escalop salad oeuf': 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                'Pasta escalop salad': 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                'Soup citrouille avec toast': 'https://images.unsplash.com/photo-1547592166-23ac4573e760?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                'Bourgouil au poulet': 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                'Salad César': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                'Salad thon oeuf': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+            };
+            
+            return images[item.name_fr] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+        }
+
+        function filterMenu(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide sections
+            const sections = ['boxes-section', 'supplements-section', 'drinks-section'];
+            if (category === 'all') {
+                sections.forEach(section => {
+                    document.getElementById(section).style.display = 'block';
+                });
+            } else {
+                sections.forEach(section => {
+                    document.getElementById(section).style.display = 'none';
+                });
+                document.getElementById(`${category}s-section`).style.display = 'block';
+            }
+        }
+
+        function addToCartFromMenu(id, name, price) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ id, name, price, quantity: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Show feedback
+            alert('Article ajouté au panier!');
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+    </script>
+</body>
+</html>
