@@ -50,6 +50,8 @@ const translations = {
         'delivery-details': 'Livraison disponible uniquement à Jijel - 150DA'
     },
     ar: {
+        'nav-dashboard': 'Dashboard',
+        'nav-dashboard': 'لوحة التحكم',
         'site-title': 'واي دي Healthy Food جيجل',
         'nav-home': 'الرئيسية',
         'nav-menu': 'القائمة',
