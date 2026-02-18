@@ -30,7 +30,17 @@ async function placeOrder(orderData) {
     try {
         const { data, error } = await supabase
             .from('orders')
-            .insert([orderData])
+            .insert([{
+                customer_name: orderData.customer_name,
+                customer_phone: orderData.customer_phone,
+                items: orderData.items,
+                total_amount: orderData.total_amount,
+                delivery_address: orderData.delivery_address,
+                delivery_fee: orderData.delivery_fee,
+                status: 'pending',
+                language: orderData.language,
+                created_at: new Date().toISOString()
+            }])
             .select();
         
         if (error) throw error;
@@ -40,7 +50,8 @@ async function placeOrder(orderData) {
             .from('order_status')
             .insert([{
                 order_id: data[0].id,
-                status: 'pending'
+                status: 'pending',
+                updated_at: new Date().toISOString()
             }]);
         
         return { success: true, order: data[0] };
@@ -79,12 +90,49 @@ async function updateOrderStatus(orderId, status) {
             .from('order_status')
             .insert([{
                 order_id: orderId,
-                status: status
+                status: status,
+                updated_at: new Date().toISOString()
             }]);
         
         return { success: true };
     } catch (error) {
         console.error('Error updating order:', error);
         return { success: false, error: error.message };
+    }
+}
+
+async function getTodayStats() {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const { data, error } = await supabase
+            .from('orders')
+            .select('*')
+            .gte('created_at', today.toISOString());
+        
+        if (error) throw error;
+        
+        const totalOrders = data.length;
+        const totalRevenue = data.reduce((sum, order) => sum + order.total_amount, 0);
+        const uniqueCustomers = new Set(data.map(order => order.customer_phone)).size;
+        const deliveryRevenue = data.reduce((sum, order) => sum + (order.delivery_fee || 0), 0);
+        
+        return {
+            totalOrders,
+            totalRevenue,
+            uniqueCustomers,
+            deliveryRevenue,
+            orders: data
+        };
+    } catch (error) {
+        console.error('Error getting today stats:', error);
+        return {
+            totalOrders: 0,
+            totalRevenue: 0,
+            uniqueCustomers: 0,
+            deliveryRevenue: 0,
+            orders: []
+        };
     }
 }
