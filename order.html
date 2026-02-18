@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander - YD Healthy Food Jijel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Same navigation as index.html -->
+    <nav class="navbar">
+        <!-- ... navigation code ... -->
+    </nav>
+
+    <main class="order-page">
+        <div class="order-container">
+            <h1 data-i18n="order-title">Passer une commande</h1>
+            
+            <!-- Customer Information -->
+            <div class="customer-info">
+                <h2 data-i18n="customer-info">Informations client</h2>
+                <form id="customerForm">
+                    <div class="form-group">
+                        <label for="customerName" data-i18n="customer-name">Nom complet</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone" data-i18n="customer-phone">Numéro de téléphone</label>
+                        <input type="tel" id="customerPhone" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryAddress" data-i18n="delivery-address">Adresse de livraison</label>
+                        <input type="text" id="deliveryAddress" placeholder="Jijel">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Menu Selection -->
+            <div class="menu-selection">
+                <h2 data-i18n="menu-title">Notre Menu</h2>
+                
+                <!-- Boxes Section -->
+                <div class="menu-category">
+                    <h3 data-i18n="boxes">Boxes</h3>
+                    <div class="menu-items" id="boxes-container">
+                        <!-- Boxes will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Supplements Section -->
+                <div class="menu-category">
+                    <h3 data-i18n="supplements">Suppléments (+50DA)</h3>
+                    <div class="menu-items" id="supplements-container">
+                        <!-- Supplements will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Drinks Section -->
+                <div class="menu-category">
+                    <h3 data-i18n="drinks">Boissons</h3>
+                    <div class="menu-items" id="drinks-container">
+                        <!-- Drinks will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 data-i18n="order-summary">Récapitulatif de la commande</h2>
+                <div id="order-items"></div>
+                <div class="summary-line">
+                    <span data-i18n="subtotal">Sous-total</span>
+                    <span id="subtotal">0 DA</span>
+                </div>
+                <div class="summary-line">
+                    <span data-i18n="delivery">Livraison</span>
+                    <span id="delivery-fee">150 DA</span>
+                </div>
+                <div class="summary-line total">
+                    <span data-i18n="total">Total</span>
+                    <span id="total">150 DA</span>
+                </div>
+                <button onclick="placeOrder()" class="order-button" data-i18n="place-order">Confirmer la commande</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Confirmation Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 data-i18n="order-confirmed">Commande confirmée!</h2>
+            <p data-i18n="order-thanks">Merci pour votre commande. Nous vous contacterons bientôt.</p>
+            <div id="order-details"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/order.js"></script>
+</body>
+</html>
