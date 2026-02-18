@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - YD Healthy Food Jijel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #45a049;
+            --danger-color: #ff4757;
+            --warning-color: #ffa502;
+            --dark-bg: #2f3542;
+        }
+
+        body {
+            background: #f1f2f6;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            color: var(--dark-bg);
+            font-size: 2rem;
+        }
+
+        .date-picker {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .date-picker input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.orders { background: #e3f2fd; color: #1976d2; }
+        .stat-icon.revenue { background: #e8f5e8; color: #4CAF50; }
+        .stat-icon.customers { background: #fff3e0; color: #f57c00; }
+        .stat-icon.delivery { background: #f3e5f5; color: #7b1fa2; }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-info .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+        }
+
+        .stat-info .stat-change {
+            font-size: 0.8rem;
+            color: #4CAF50;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-bg);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .recent-orders {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .recent-orders h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-bg);
+        }
+
+        .orders-table-container {
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f8f9fa;
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+
+        .orders-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-preparing { background: #d1ecf1; color: #0c5460; }
+        .status-delivered { background: #d4edda; color: #155724; }
+
+        .action-btn {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+
+        .action-btn.view {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: var(--secondary-color);
+        }
+
+        .top-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .top-item-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-item-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .top-item-info {
+            flex: 1;
+        }
+
+        .top-item-info h4 {
+            color: var(--dark-bg);
+            margin-bottom: 0.2rem;
+        }
+
+        .top-item-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .top-item-stats {
+            text-align: right;
+        }
+
+        .top-item-stats .count {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .refresh-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 0 1rem;
+            }
+            
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line" style="color: var(--primary-color);"></i> Tableau de Bord</h1>
+            <div class="date-picker">
+                <input type="date" id="startDate" onchange="updateDashboard()">
+                <input type="date" id="endDate" onchange="updateDashboard()">
+                <button class="refresh-btn" onclick="refreshDashboard()">
+                    <i class="fas fa-sync-alt"></i> Actualiser
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon orders">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Commandes aujourd'hui</h3>
+                    <div class="stat-value" id="todayOrders">0</div>
+                    <div class="stat-change" id="ordersChange">+0% vs hier</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon revenue">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Chiffre d'affaires</h3>
+                    <div class="stat-value" id="todayRevenue">0 DA</div>
+                    <div class="stat-change" id="revenueChange">+0% vs hier</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon customers">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Clients uniques</h3>
+                    <div class="stat-value" id="uniqueCustomers">0</div>
+                    <div class="stat-change" id="customersChange">Ce mois</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon delivery">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Livraisons</h3>
+                    <div class="stat-value" id="deliveryCount">0</div>
+                    <div class="stat-change" id="deliveryRevenue">0 DA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Commandes par jour</h3>
+                <div class="chart-container">
+                    <canvas id="ordersChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Répartition des ventes</h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="recent-orders">
+            <h3><i class="fas fa-clock"></i> Commandes récentes</h3>
+            <div class="orders-table-container">
+                <table class="orders-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client</th>
+                            <th>Téléphone</th>
+                            <th>Articles</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Items -->
+        <div class="top-items" id="topItems">
+            <!-- Top items will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close">&times;</span>
+            <h2>Détails de la commande</h2>
+            <div id="orderDetails"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        let ordersChart, categoryChart;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setDefaultDates();
+            loadDashboardData();
+        });
+
+        function setDefaultDates() {
+            const today = new Date();
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(today.getDate() - 7);
+            
+            document.getElementById('startDate').value = sevenDaysAgo.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+        }
+
+        async function loadDashboardData() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Load all orders
+            const orders = await getOrders();
+            
+            // Filter by date range
+            const filteredOrders = filterOrdersByDate(orders, startDate, endDate);
+            
+            // Update statistics
+            updateStatistics(filteredOrders, orders);
+            
+            // Update charts
+            updateCharts(filteredOrders);
+            
+            // Update orders table
+            updateOrdersTable(filteredOrders);
+            
+            // Update top items
+            updateTopItems(filteredOrders);
+        }
+
+        function filterOrdersByDate(orders, startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59);
+            
+            return orders.filter(order => {
+                const orderDate = new Date(order.created_at);
+                return orderDate >= start && orderDate <= end;
+            });
+        }
+
+        function updateStatistics(filteredOrders, allOrders) {
+            // Today's orders
+            const today = new Date().toDateString();
+            const todayOrders = filteredOrders.filter(order => 
+                new Date(order.created_at).toDateString() === today
+            );
+            
+            document.getElementById('todayOrders').textContent = todayOrders.length;
+            
+            // Yesterday's orders for comparison
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayOrders = allOrders.filter(order => 
+                new Date(order.created_at).toDateString() === yesterday.toDateString()
+            );
+            
+            const ordersChange = yesterdayOrders.length > 0 
+                ? ((todayOrders.length - yesterdayOrders.length) / yesterdayOrders.length * 100).toFixed(1)
+                : 0;
+            document.getElementById('ordersChange').textContent = 
+                `${ordersChange > 0 ? '+' : ''}${ordersChange}% vs hier`;
+            
+            // Revenue
+            const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total_amount, 0);
+            document.getElementById('todayRevenue').textContent = todayRevenue.toLocaleString() + ' DA';
+            
+            const yesterdayRevenue = yesterdayOrders.reduce((sum, order) => sum + order.total_amount, 0);
+            const revenueChange = yesterdayRevenue > 0 
+                ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100).toFixed(1)
+                : 0;
+            document.getElementById('revenueChange').textContent = 
+                `${revenueChange > 0 ? '+' : ''}${revenueChange}% vs hier`;
+            
+            // Unique customers
+            const uniquePhones = new Set(filteredOrders.map(order => order.customer_phone));
+            document.getElementById('uniqueCustomers').textContent = uniquePhones.size;
+            
+            // Delivery stats
+            const deliveryOrders = filteredOrders.filter(order => order.delivery_fee > 0);
+            document.getElementById('deliveryCount').textContent = deliveryOrders.length;
+            const deliveryRevenue = deliveryOrders.reduce((sum, order) => sum + order.delivery_fee, 0);
+            document.getElementById('deliveryRevenue').textContent = deliveryRevenue.toLocaleString() + ' DA';
+        }
+
+        function updateCharts(orders) {
+            // Orders by day chart
+            const ordersByDay = {};
+            orders.forEach(order => {
+                const date = new Date(order.created_at).toLocaleDateString();
+                ordersByDay[date] = (ordersByDay[date] || 0) + 1;
+            });
+            
+            const dates = Object.keys(ordersByDay).sort();
+            const counts = dates.map(date => ordersByDay[date]);
+            
+            if (ordersChart) ordersChart.destroy();
+            
+            const ctx = document.getElementById('ordersChart').getContext('2d');
+            ordersChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Nombre de commandes',
+                        data: counts,
+                        backgroundColor: '#4CAF50',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Category distribution chart
+            const categoryCount = {
+                'box': 0,
+                'supplement': 0,
+                'drink': 0
+            };
+            
+            orders.forEach(order => {
+                if (order.items) {
+                    order.items.forEach(item => {
+                        // You would need to get category from items
+                        // For now, approximate based on price
+                        if (item.price >= 300) categoryCount.box++;
+                        else if (item.price >= 50) categoryCount.supplement++;
+                        else categoryCount.drink++;
+                    });
+                }
+            });
+            
+            if (categoryChart) categoryChart.destroy();
+            
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Boxes', 'Suppléments', 'Boissons'],
+                    datasets: [{
+                        data: [categoryCount.box, categoryCount.supplement, categoryCount.drink],
+                        backgroundColor: ['#4CAF50', '#ffa502', '#1976d2'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function updateOrdersTable(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            
+            orders.slice(0, 10).forEach(order => {
+                const row = document.createElement('tr');
+                const date = new Date(order.created_at).toLocaleString();
+                const itemCount = order.items ? order.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+                
+                row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.customer_name}</td>
+                    <td>${order.customer_phone}</td>
+                    <td>${itemCount} articles</td>
+                    <td><strong>${order.total_amount} DA</strong></td>
+                    <td><span class="status-badge status-${order.status || 'pending'}">${getStatusText(order.status)}</span></td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="action-btn view" onclick="viewOrderDetails(${order.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'En attente',
+                'preparing': 'En préparation',
+                'delivered': 'Livré'
+            };
+            return statusMap[status] || 'En attente';
+        }
+
+        function updateTopItems(orders) {
+            const itemCount = {};
+            
+            orders.forEach(order => {
+                if (order.items) {
+                    order.items.forEach(item => {
+                        if (!itemCount[item.name]) {
+                            itemCount[item.name] = {
+                                count: 0,
+                                revenue: 0
+                            };
+                        }
+                        itemCount[item.name].count += item.quantity;
+                        itemCount[item.name].revenue += item.price * item.quantity;
+                    });
+                }
+            });
+            
+            const sortedItems = Object.entries(itemCount)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 3);
+            
+            const container = document.getElementById('topItems');
+            container.innerHTML = '<h3 style="grid-column: 1/-1;"><i class="fas fa-star"></i> Articles les plus vendus</h3>';
+            
+            sortedItems.forEach(([name, data], index) => {
+                const card = document.createElement('div');
+                card.className = 'top-item-card';
+                card.innerHTML = `
+                    <div class="top-item-rank">${index + 1}</div>
+                    <div class="top-item-info">
+                        <h4>${name}</h4>
+                        <p>${data.count} vendus</p>
+                    </div>
+                    <div class="top-item-stats">
+                        <div class="count">${data.revenue} DA</div>
+                        <small>CA</small>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function viewOrderDetails(orderId) {
+            const orders = await getOrders();
+            const order = orders.find(o => o.id === orderId);
+            
+            if (!order) return;
+            
+            const modal = document.getElementById('orderModal');
+            const details = document.getElementById('orderDetails');
+            
+            let itemsHtml = '<h4>Articles commandés:</h4><ul>';
+            order.items.forEach(item => {
+                itemsHtml += `<li>${item.name} x${item.quantity} - ${item.price * item.quantity} DA</li>`;
+            });
+            itemsHtml += '</ul>';
+            
+            details.innerHTML = `
+                <p><strong>Commande #:</strong> ${order.id}</p>
+                <p><strong>Client:</strong> ${order.customer_name}</p>
+                <p><strong>Téléphone:</strong> ${order.customer_phone}</p>
+                <p><strong>Adresse:</strong> ${order.delivery_address || 'Jijel'}</p>
+                ${itemsHtml}
+                <p><strong>Sous-total:</strong> ${order.total_amount - order.delivery_fee} DA</p>
+                <p><strong>Livraison:</strong> ${order.delivery_fee} DA</p>
+                <p><strong>Total:</strong> ${order.total_amount} DA</p>
+                <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                <p><strong>Statut:</strong> ${getStatusText(order.status)}</p>
+            `;
+            
+            modal.style.display = 'block';
+            
+            document.querySelector('.close').onclick = () => {
+                modal.style.display = 'none';
+            };
+            
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+
+        function refreshDashboard() {
+            loadDashboardData();
+        }
+
+        function updateDashboard() {
+            loadDashboardData();
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshDashboard, 30000);
+    </script>
+</body>
+</html>
