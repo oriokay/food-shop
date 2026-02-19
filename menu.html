@@ -57,25 +57,27 @@
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
-        .menu-card {
+        .box-card {
             background: white;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s;
             position: relative;
+            border: 1px solid #eee;
         }
 
-        .menu-card:hover {
+        .box-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
         }
 
-        .menu-card.popular::before {
+        .box-card.popular::before {
             content: "🔥 Populaire";
             position: absolute;
             top: 10px;
@@ -89,79 +91,311 @@
             z-index: 1;
         }
 
-        .menu-card-image {
-            height: 200px;
+        .box-image {
+            height: 180px;
             background-size: cover;
             background-position: center;
             position: relative;
         }
 
-        .menu-card-content {
+        .box-content {
             padding: 1.5rem;
         }
 
-        .menu-card-title {
+        .box-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5rem;
         }
 
-        .menu-card-title h3 {
+        .box-header h3 {
             font-size: 1.2rem;
             color: #333;
+            font-weight: 600;
         }
 
-        .menu-card-price {
+        .box-price {
             font-size: 1.3rem;
             font-weight: 700;
             color: #4CAF50;
         }
 
-        .menu-card-calories {
+        .box-calories {
             color: #666;
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
 
-        .menu-card-calories i {
-            color: #4CAF50;
+        .box-calories i {
+            color: #ff4757;
             margin-right: 0.3rem;
         }
 
-        .menu-card-footer {
+        .box-supplements {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .box-supplements h4 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .supplement-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #ddd;
         }
 
-        .add-to-cart-btn {
+        .supplement-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .supplement-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .supplement-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .supplement-price {
+            font-size: 0.85rem;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: white;
+            padding: 0.3rem;
+            border-radius: 25px;
+            border: 1px solid #4CAF50;
+        }
+
+        .quantity-control button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .quantity-control button:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        .quantity-control button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .quantity-control span {
+            min-width: 25px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .add-box-btn {
+            width: 100%;
+            padding: 1rem;
             background: #4CAF50;
             color: white;
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .add-to-cart-btn:hover {
+        .add-box-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .add-box-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Supplements and Drinks Cards */
+        .item-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.15);
+        }
+
+        .item-info h4 {
+            color: #333;
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .item-price {
+            color: #4CAF50;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Floating Cart */
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s;
+            z-index: 999;
+            border: 3px solid white;
+        }
+
+        .floating-cart:hover {
+            transform: scale(1.1);
             background: #45a049;
         }
 
-        .supplement-badge {
-            background: #ffd700;
-            color: #333;
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 2px solid white;
         }
 
-        [dir="rtl"] .menu-card.popular::before {
+        /* Section Titles */
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #4CAF50;
+        }
+
+        [dir="rtl"] .section-title::after {
+            left: auto;
+            right: 0;
+        }
+
+        .delivery-note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .delivery-note i {
+            color: #856404;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .box-card.popular::before {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.8rem;
+            }
+            
+            .floating-cart {
+                width: 55px;
+                height: 55px;
+                font-size: 1.5rem;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        [dir="rtl"] .box-card.popular::before {
             right: auto;
             left: 10px;
+        }
+
+        [dir="rtl"] .menu-categories {
+            flex-direction: row-reverse;
         }
     </style>
 </head>
@@ -182,6 +416,7 @@
             <li><a href="menu.html" data-i18n="nav-menu">Menu</a></li>
             <li><a href="order.html" data-i18n="nav-order">Commander</a></li>
             <li><a href="contact.html" data-i18n="nav-contact">Contact</a></li>
+            <li><a href="dashboard.html" data-i18n="nav-dashboard">Dashboard</a></li>
         </ul>
         <div class="burger">
             <div class="line1"></div>
@@ -190,283 +425,424 @@
         </div>
     </nav>
 
+    <!-- Menu Hero -->
     <section class="menu-hero">
-        <div class="container">
-            <h1 id="menu-page-title">Notre Menu Complet</h1>
-            <p id="menu-page-subtitle">Découvrez toutes nos options saines et délicieuses</p>
+        <div>
+            <h1 data-i18n="menu-title">Notre Menu Healthy</h1>
+            <p data-i18n="menu-subtitle">Des plats délicieux et équilibrés préparés avec des ingrédients frais</p>
         </div>
     </section>
 
-    <!-- Menu Categories -->
-    <section class="menu-categories">
-        <div class="container">
-            <!-- Food Boxes -->
-            <div class="menu-category">
-                <h2 id="boxes-title">Boxes</h2>
-                <div class="menu-items">
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Riz escalop salad oeuf</div>
-                                <div class="item-price">350 DA</div>
-                            </div>
-                            <div class="item-description">Riz avec escalope, salade et œuf</div>
-                            <div class="item-calories">720 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Pasta escalop salad</div>
-                                <div class="item-price">400 DA</div>
-                            </div>
-                            <div class="item-description">Pâtes avec escalope et salade</div>
-                            <div class="item-calories">750 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Soup citrouille avec un toast</div>
-                                <div class="item-price">450 DA</div>
-                            </div>
-                            <div class="item-description">Soupe de citrouille servie avec un toast</div>
-                            <div class="item-calories">500 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Bourgouil au poulet</div>
-                                <div class="item-price">450 DA</div>
-                            </div>
-                            <div class="item-description">Boulgour au poulet</div>
-                            <div class="item-calories">640 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Salad Cesar</div>
-                                <div class="item-price">300 DA</div>
-                            </div>
-                            <div class="item-description">Salade César classique</div>
-                            <div class="item-calories">550 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Salad thon oeuf</div>
-                                <div class="item-price">400 DA</div>
-                            </div>
-                            <div class="item-description">Salade de thon avec œuf</div>
-                            <div class="item-calories">580 KCal</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Drinks -->
-            <div class="menu-category">
-                <h2 id="drinks-title">Boissons</h2>
-                <div class="menu-items">
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Jus banan date</div>
-                                <div class="item-price">300 DA</div>
-                            </div>
-                            <div class="item-description">Jus naturel de banane et datte</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Vishy</div>
-                                <div class="item-price">70 DA</div>
-                            </div>
-                            <div class="item-description">Eau minérale Vishy</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Bouteille d'eau</div>
-                                <div class="item-price">40 DA</div>
-                            </div>
-                            <div class="item-description">Bouteille d'eau minérale</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Supplements -->
-            <div class="menu-category">
-                <h2 id="supplements-title">Suppléments</h2>
-                <div class="menu-items">
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Œuf supplémentaire</div>
-                                <div class="item-price">50 DA</div>
-                            </div>
-                            <div class="item-description">Ajouter un œuf supplémentaire</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-info">
-                            <div class="item-header">
-                                <div class="item-name">Escalop supplémentaire</div>
-                                <div class="item-price">50 DA</div>
-                            </div>
-                            <div class="item-description">Ajouter une escalope supplémentaire</div>
-                            <button class="add-to-cart-btn">Ajouter au Panier</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Delivery Note -->
+    <div class="menu-section">
+        <div class="delivery-note">
+            <i class="fas fa-truck"></i>
+            <span data-i18n="delivery-note">Livraison disponible uniquement à Jijel - 150DA</span>
         </div>
-    </section>
+    </div>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2 id="ready-to-order-title">Prêt à commander?</h2>
-            <p id="ready-to-order-text">Passez votre commande en ligne et recevez votre nourriture saine rapidement!</p>
-            <a href="order.html" class="order-btn" id="order-now-btn">Commander Maintenant</a>
+    <!-- Category Filter -->
+    <div class="menu-categories">
+        <button class="category-btn active" onclick="filterMenu('all')" data-i18n="all">Tous</button>
+        <button class="category-btn" onclick="filterMenu('box')" data-i18n="boxes">Boxes</button>
+        <button class="category-btn" onclick="filterMenu('supplement')" data-i18n="supplements">Suppléments</button>
+        <button class="category-btn" onclick="filterMenu('drink')" data-i18n="drinks">Boissons</button>
+    </div>
+
+    <!-- Boxes Section -->
+    <div class="menu-section" id="boxes-section">
+        <h2 class="section-title" data-i18n="boxes">Nos Boxes</h2>
+        <div class="menu-grid" id="boxes-grid">
+            <!-- Boxes will be loaded dynamically -->
         </div>
-    </section>
+    </div>
+
+    <!-- Supplements Section -->
+    <div class="menu-section" id="supplements-section">
+        <h2 class="section-title" data-i18n="supplements">Suppléments</h2>
+        <p style="color: #666; margin-bottom: 1rem;" data-i18n="supplements-note">Œuf et escalop peuvent être ajoutés à vos boxes (+50DA chacun)</p>
+        <div class="menu-grid" id="supplements-grid">
+            <!-- Supplements will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Drinks Section -->
+    <div class="menu-section" id="drinks-section">
+        <h2 class="section-title" data-i18n="drinks">Boissons</h2>
+        <div class="menu-grid" id="drinks-grid">
+            <!-- Drinks will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Floating Cart Button -->
+    <div class="floating-cart" onclick="window.location.href='order.html'">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cartCount">0</span>
+    </div>
 
     <!-- Footer -->
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <i class="fas fa-leaf logo-icon"></i>
-                    <h3>YD Healthy Food Jijel</h3>
-                    <p id="footer-slogan">Nourriture saine, vie équilibrée</p>
-                </div>
-                <div class="footer-links">
-                    <h4 id="quick-links-title">Liens Rapides</h4>
-                    <ul>
-                        <li><a href="index.html">Accueil</a></li>
-                        <li><a href="menu.html">Menu</a></li>
-                        <li><a href="order.html">Commander</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-contact">
-                    <h4 id="contact-info-title">Informations de Contact</h4>
-                    <p><i class="fas fa-phone"></i> 0542299391</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Jijel, Algérie</p>
-                    <p><i class="fas fa-truck"></i> Livraison: 150 DA (Jijel uniquement)</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 data-i18n="footer-contact">Contactez-nous</h3>
+                <p><i class="fas fa-phone"></i> 0542299391</p>
+                <div class="social-links">
+                    <a href="https://facebook.com/YDhealthyfoodjijel" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://instagram.com/healthy_food_jijel" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@yd_healthy_food" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p id="footer-text">&copy; 2023 YD Healthy Food Jijel. Tous droits réservés.</p>
+            <div class="footer-section">
+                <h3 data-i18n="footer-hours">Heures d'ouverture</h3>
+                <p>9:00 - 22:00</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-i18n="footer-delivery">Livraison</h3>
+                <p data-i18n="footer-delivery-text">150DA dans tout Jijel</p>
             </div>
         </div>
     </footer>
-
-    <script src="script.js"></script>
-    <script>
-        // Initialize menu page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set active nav link
-            const currentPage = window.location.pathname.split('/').pop();
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentPage) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script src="js/i18n.js"></script>
     <script>
+        // Menu items data
+        const MENU_ITEMS = {
+            boxes: [
+                { id: 1, name_fr: 'Riz escalop salad oeuf', name_ar: 'رز إسكالوب سلطة بيض', basePrice: 350, calories: 720, popular: true },
+                { id: 2, name_fr: 'Pasta escalop salad', name_ar: 'باستا إسكالوب سلطة', basePrice: 400, calories: 750, popular: true },
+                { id: 3, name_fr: 'Soup citrouille avec toast', name_ar: 'شوربة اليقطين مع توست', basePrice: 450, calories: 500, popular: false },
+                { id: 4, name_fr: 'Bourgouil au poulet', name_ar: 'برغل بالدجاج', basePrice: 450, calories: 640, popular: false },
+                { id: 5, name_fr: 'Salad César', name_ar: 'سلطة سيزر', basePrice: 300, calories: 550, popular: false },
+                { id: 6, name_fr: 'Salad thon oeuf', name_ar: 'سلطة تونة بيض', basePrice: 400, calories: 580, popular: true }
+            ],
+            supplements: [
+                { id: 101, name_fr: 'Œuf supplément', name_ar: 'بيضة إضافية', price: 50 },
+                { id: 102, name_fr: 'Escalop supplément', name_ar: 'إسكالوب إضافي', price: 50 }
+            ],
+            drinks: [
+                { id: 201, name_fr: 'Jus banane date', name_ar: 'عصير موز تمر', price: 300 },
+                { id: 202, name_fr: 'Vishy', name_ar: 'فيشي', price: 70 },
+                { id: 203, name_fr: 'Bouteille eau', name_ar: 'معدنية', price: 40 }
+            ]
+        };
+
+        let currentLanguage = 'fr';
+        let boxSupplements = {};
+
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadMenuItemsDisplay();
+            await loadMenuDisplay();
             updateCartCount();
         });
 
-        async function loadMenuItemsDisplay() {
-            const items = await loadMenuItems();
-            
-            // Boxes
-            const boxes = items.filter(item => item.category === 'box');
-            displayMenuItems('boxes-grid', boxes);
-            
-            // Supplements
-            const supplements = items.filter(item => item.category === 'supplement');
-            displayMenuItems('supplements-grid', supplements);
-            
-            // Drinks
-            const drinks = items.filter(item => item.category === 'drink');
-            displayMenuItems('drinks-grid', drinks);
+        async function loadMenuDisplay() {
+            try {
+                // Try to load from Supabase first
+                const items = await loadMenuItems();
+                if (items && items.length > 0) {
+                    displayBoxes(items.filter(item => item.category === 'box'));
+                    displaySupplements(items.filter(item => item.category === 'supplement'));
+                    displayDrinks(items.filter(item => item.category === 'drink'));
+                } else {
+                    // Fallback to local data
+                    displayBoxes(MENU_ITEMS.boxes);
+                    displaySupplements(MENU_ITEMS.supplements);
+                    displayDrinks(MENU_ITEMS.drinks);
+                }
+            } catch (error) {
+                console.error('Error loading menu, using local data:', error);
+                displayBoxes(MENU_ITEMS.boxes);
+                displaySupplements(MENU_ITEMS.supplements);
+                displayDrinks(MENU_ITEMS.drinks);
+            }
         }
 
-        function displayMenuItems(containerId, items) {
-            const container = document.getElementById(containerId);
+        function displayBoxes(boxes) {
+            const container = document.getElementById('boxes-grid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            // Image mapping for boxes
+            const boxImages = {
+                1: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                2: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                3: 'https://images.unsplash.com/photo-1547592166-23ac4573e760?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                4: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                5: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                6: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+            };
+            
+            boxes.forEach(box => {
+                const boxCard = document.createElement('div');
+                boxCard.className = `box-card ${box.popular ? 'popular' : ''}`;
+                
+                const imageUrl = boxImages[box.id] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                
+                boxCard.innerHTML = `
+                    <div class="box-image" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('${imageUrl}')">
+                    </div>
+                    <div class="box-content">
+                        <div class="box-header">
+                            <h3>${currentLanguage === 'fr' ? box.name_fr : box.name_ar}</h3>
+                            <span class="box-price">${box.basePrice} DA</span>
+                        </div>
+                        <div class="box-calories">
+                            <i class="fas fa-fire"></i> ${box.calories} KCal
+                        </div>
+                        <div class="box-supplements">
+                            <h4>${currentLanguage === 'fr' ? 'Ajouter des suppléments (+50DA)' : 'إضافة إضافات (+50 دج)'}</h4>
+                            
+                            <div class="supplement-row">
+                                <div class="supplement-info">
+                                    <span class="supplement-name">${currentLanguage === 'fr' ? 'Œuf' : 'بيض'}</span>
+                                    <span class="supplement-price">+50 DA</span>
+                                </div>
+                                <div class="quantity-control">
+                                    <button onclick="updateBoxSupplement(${box.id}, 'egg', -1)">-</button>
+                                    <span id="box-${box.id}-egg">0</span>
+                                    <button onclick="updateBoxSupplement(${box.id}, 'egg', 1)">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="supplement-row">
+                                <div class="supplement-info">
+                                    <span class="supplement-name">${currentLanguage === 'fr' ? 'Escalop' : 'إسكالوب'}</span>
+                                    <span class="supplement-price">+50 DA</span>
+                                </div>
+                                <div class="quantity-control">
+                                    <button onclick="updateBoxSupplement(${box.id}, 'escalop', -1)">-</button>
+                                    <span id="box-${box.id}-escalop">0</span>
+                                    <button onclick="updateBoxSupplement(${box.id}, 'escalop', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="addBoxToOrder(${box.id}, '${currentLanguage === 'fr' ? box.name_fr : box.name_ar}', ${box.basePrice}, ${box.calories})" class="add-box-btn">
+                            <i class="fas fa-cart-plus"></i> 
+                            ${currentLanguage === 'fr' ? 'Ajouter au panier' : 'أضف إلى السلة'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(boxCard);
+            });
+        }
+
+        function displaySupplements(supplements) {
+            const container = document.getElementById('supplements-grid');
             if (!container) return;
             
             container.innerHTML = '';
             
-            items.forEach((item, index) => {
-                const isPopular = index < 2; // Mark first 2 items as popular
-                const imageUrl = getImageForItem(item);
-                
-                const card = document.createElement('div');
-                card.className = `menu-card ${isPopular ? 'popular' : ''}`;
-                card.innerHTML = `
-                    <div class="menu-card-image" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${imageUrl}')">
+            supplements.forEach(supp => {
+                const suppCard = document.createElement('div');
+                suppCard.className = 'item-card';
+                suppCard.innerHTML = `
+                    <div class="item-info">
+                        <h4>${currentLanguage === 'fr' ? supp.name_fr : supp.name_ar}</h4>
+                        <span class="item-price">${supp.price} DA</span>
                     </div>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">
-                            <h3>${currentLanguage === 'fr' ? item.name_fr : item.name_ar}</h3>
-                            <span class="menu-card-price">${item.price} DA</span>
-                        </div>
-                        ${item.calories ? `
-                            <div class="menu-card-calories">
-                                <i class="fas fa-fire"></i> ${item.calories} KCal
-                            </div>
-                        ` : ''}
-                        <div class="menu-card-footer">
-                            <button onclick="addToCartFromMenu(${item.id}, '${currentLanguage === 'fr' ? item.name_fr : item.name_ar}', ${item.price})" class="add-to-cart-btn">
-                                <i class="fas fa-cart-plus"></i> ${translations[currentLanguage]['add-to-order']}
-                            </button>
+                    <div class="item-controls">
+                        <div class="quantity-control">
+                            <button onclick="updateSupplementQuantity(${supp.id}, -1)">-</button>
+                            <span id="supp-${supp.id}-qty">0</span>
+                            <button onclick="updateSupplementQuantity(${supp.id}, 1)">+</button>
                         </div>
                     </div>
                 `;
-                container.appendChild(card);
+                container.appendChild(suppCard);
             });
         }
 
-        function getImageForItem(item) {
-            // You can customize images based on item name
-            const images = {
-                'Riz escalop salad oeuf': 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-                'Pasta escalop salad': 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-                'Soup citrouille avec toast': 'https://images.unsplash.com/photo-1547592166-23ac4573e760?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-                'Bourgouil au poulet': 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-                'Salad César': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-                'Salad thon oeuf': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-            };
+        function displayDrinks(drinks) {
+            const container = document.getElementById('drinks-grid');
+            if (!container) return;
             
-            return images[item.name_fr] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+            container.innerHTML = '';
+            
+            drinks.forEach(drink => {
+                const drinkCard = document.createElement('div');
+                drinkCard.className = 'item-card';
+                drinkCard.innerHTML = `
+                    <div class="item-info">
+                        <h4>${currentLanguage === 'fr' ? drink.name_fr : drink.name_ar}</h4>
+                        <span class="item-price">${drink.price} DA</span>
+                    </div>
+                    <div class="item-controls">
+                        <div class="quantity-control">
+                            <button onclick="updateDrinkQuantity(${drink.id}, -1)">-</button>
+                            <span id="drink-${drink.id}-qty">0</span>
+                            <button onclick="updateDrinkQuantity(${drink.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(drinkCard);
+            });
+        }
+
+        function updateBoxSupplement(boxId, type, change) {
+            const key = `box-${boxId}-${type}`;
+            if (!boxSupplements[key]) {
+                boxSupplements[key] = 0;
+            }
+            
+            const newValue = Math.max(0, boxSupplements[key] + change);
+            boxSupplements[key] = newValue;
+            
+            const element = document.getElementById(`box-${boxId}-${type}`);
+            if (element) {
+                element.textContent = newValue;
+            }
+        }
+
+        function addBoxToOrder(boxId, boxName, basePrice, calories) {
+            // Get supplements for this box
+            const eggQty = boxSupplements[`box-${boxId}-egg`] || 0;
+            const escalopQty = boxSupplements[`box-${boxId}-escalop`] || 0;
+            
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('ydCart') || '[]');
+            
+            if (eggQty === 0 && escalopQty === 0) {
+                // Simple box without supplements
+                const existingItem = cart.find(item => 
+                    item.id === boxId && 
+                    item.type === 'box' && 
+                    (!item.supplements || item.supplements.length === 0)
+                );
+                
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({
+                        id: boxId,
+                        type: 'box',
+                        name: boxName,
+                        basePrice: basePrice,
+                        calories: calories,
+                        quantity: 1,
+                        supplements: []
+                    });
+                }
+            } else {
+                // Box with supplements
+                const supplements = [];
+                if (eggQty > 0) supplements.push({ type: 'egg', quantity: eggQty, price: 50 });
+                if (escalopQty > 0) supplements.push({ type: 'escalop', quantity: escalopQty, price: 50 });
+                
+                // Create a unique ID for this combination
+                const uniqueId = `${boxId}-${eggQty}e-${escalopQty}s-${Date.now()}`;
+                
+                cart.push({
+                    id: uniqueId,
+                    originalId: boxId,
+                    type: 'box',
+                    name: boxName,
+                    basePrice: basePrice,
+                    calories: calories,
+                    quantity: 1,
+                    supplements: supplements
+                });
+            }
+            
+            // Reset supplement counters for this box
+            boxSupplements[`box-${boxId}-egg`] = 0;
+            boxSupplements[`box-${boxId}-escalop`] = 0;
+            
+            // Update display
+            document.getElementById(`box-${boxId}-egg`).textContent = '0';
+            document.getElementById(`box-${boxId}-escalop`).textContent = '0';
+            
+            // Save cart
+            localStorage.setItem('ydCart', JSON.stringify(cart));
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show notification
+            showNotification(currentLanguage === 'fr' ? 'Box ajoutée au panier!' : 'تمت إضافة الصندوق إلى السلة!', 'success');
+        }
+
+        function updateSupplementQuantity(suppId, change) {
+            const supp = MENU_ITEMS.supplements.find(s => s.id === suppId);
+            if (!supp) return;
+            
+            let cart = JSON.parse(localStorage.getItem('ydCart') || '[]');
+            
+            const existingItem = cart.find(item => item.id === suppId && item.type === 'supplement');
+            
+            if (existingItem) {
+                const newQty = Math.max(0, existingItem.quantity + change);
+                if (newQty === 0) {
+                    cart = cart.filter(item => !(item.id === suppId && item.type === 'supplement'));
+                } else {
+                    existingItem.quantity = newQty;
+                }
+            } else if (change > 0) {
+                cart.push({
+                    id: suppId,
+                    type: 'supplement',
+                    name: currentLanguage === 'fr' ? supp.name_fr : supp.name_ar,
+                    price: supp.price,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('ydCart', JSON.stringify(cart));
+            
+            const qtyElement = document.getElementById(`supp-${suppId}-qty`);
+            if (qtyElement) {
+                const newItem = cart.find(item => item.id === suppId && item.type === 'supplement');
+                qtyElement.textContent = newItem ? newItem.quantity : 0;
+            }
+            
+            updateCartCount();
+        }
+
+        function updateDrinkQuantity(drinkId, change) {
+            const drink = MENU_ITEMS.drinks.find(d => d.id === drinkId);
+            if (!drink) return;
+            
+            let cart = JSON.parse(localStorage.getItem('ydCart') || '[]');
+            
+            const existingItem = cart.find(item => item.id === drinkId && item.type === 'drink');
+            
+            if (existingItem) {
+                const newQty = Math.max(0, existingItem.quantity + change);
+                if (newQty === 0) {
+                    cart = cart.filter(item => !(item.id === drinkId && item.type === 'drink'));
+                } else {
+                    existingItem.quantity = newQty;
+                }
+            } else if (change > 0) {
+                cart.push({
+                    id: drinkId,
+                    type: 'drink',
+                    name: currentLanguage === 'fr' ? drink.name_fr : drink.name_ar,
+                    price: drink.price,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('ydCart', JSON.stringify(cart));
+            
+            const qtyElement = document.getElementById(`drink-${drinkId}-qty`);
+            if (qtyElement) {
+                const newItem = cart.find(item => item.id === drinkId && item.type === 'drink');
+                qtyElement.textContent = newItem ? newItem.quantity : 0;
+            }
+            
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('ydCart') || '[]');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = count;
+            }
         }
 
         function filterMenu(category) {
@@ -477,41 +853,90 @@
             event.target.classList.add('active');
             
             // Show/hide sections
-            const sections = ['boxes-section', 'supplements-section', 'drinks-section'];
+            const sections = {
+                'boxes-section': document.getElementById('boxes-section'),
+                'supplements-section': document.getElementById('supplements-section'),
+                'drinks-section': document.getElementById('drinks-section')
+            };
+            
             if (category === 'all') {
-                sections.forEach(section => {
-                    document.getElementById(section).style.display = 'block';
-                });
-            } else {
-                sections.forEach(section => {
-                    document.getElementById(section).style.display = 'none';
-                });
-                document.getElementById(`${category}s-section`).style.display = 'block';
+                sections['boxes-section'].style.display = 'block';
+                sections['supplements-section'].style.display = 'block';
+                sections['drinks-section'].style.display = 'block';
+            } else if (category === 'box') {
+                sections['boxes-section'].style.display = 'block';
+                sections['supplements-section'].style.display = 'none';
+                sections['drinks-section'].style.display = 'none';
+            } else if (category === 'supplement') {
+                sections['boxes-section'].style.display = 'none';
+                sections['supplements-section'].style.display = 'block';
+                sections['drinks-section'].style.display = 'none';
+            } else if (category === 'drink') {
+                sections['boxes-section'].style.display = 'none';
+                sections['supplements-section'].style.display = 'none';
+                sections['drinks-section'].style.display = 'block';
             }
         }
 
-        function addToCartFromMenu(id, name, price) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const existingItem = cart.find(item => item.id === id);
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
             
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({ id, name, price, quantity: 1 });
-            }
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '1rem 2rem';
+            notification.style.background = type === 'success' ? '#4CAF50' : '#ff4757';
+            notification.style.color = 'white';
+            notification.style.borderRadius = '5px';
+            notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            notification.style.zIndex = '9999';
+            notification.style.animation = 'slideIn 0.3s ease';
             
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
+            document.body.appendChild(notification);
             
-            // Show feedback
-            alert('Article ajouté au panier!');
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
 
-        function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cartCount').textContent = count;
-        }
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update cart count when page loads and when language changes
+        window.addEventListener('load', updateCartCount);
+        window.addEventListener('storage', updateCartCount);
     </script>
 </body>
 </html>
